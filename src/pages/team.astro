@@ -1,0 +1,24 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import PageIntro from "@/components/site/page-intro.astro"
+import { TEAM, TEAM_HERO } from "@/content/team"
+
+// No [data-scene-scroll] track and no page script here: this route
+// intentionally leaves the scene's scroll progress at 0.
+---
+
+<Layout title={TEAM_HERO.title} description={TEAM_HERO.subtitle}>
+  <PageIntro title={TEAM_HERO.title} subtitle={TEAM_HERO.subtitle} />
+
+  <ul>
+    {
+      TEAM.map((member) => (
+        <li>
+          <h2>{member.name}</h2>
+          <p>{member.role}</p>
+          <p>{member.bio}</p>
+        </li>
+      ))
+    }
+  </ul>
+</Layout>

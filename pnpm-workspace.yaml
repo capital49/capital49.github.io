@@ -3,3 +3,5 @@ allowBuilds:
   sharp: true
 minimumReleaseAgeExclude:
   - astro@7.1.4
+  - '@astrojs/internal-helpers@0.10.2'
+  - '@astrojs/react@6.0.2'

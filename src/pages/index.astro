@@ -1,17 +1,30 @@
 ---
-
+import Layout from "@/layouts/Layout.astro"
+import PageIntro from "@/components/site/page-intro.astro"
+import { HOME_HERO, SCROLL_STATEMENTS } from "@/content/home"
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+  <PageIntro title={HOME_HERO.title} subtitle={HOME_HERO.subtitle} />
+
+  <!-- Scroll track for the 3D mark: initSceneScroll() scrubs this element's
+       scroll range into the scene's rotation / z-travel. Must stay tall enough
+       to scroll. -->
+  <section data-scene-scroll class="min-h-[300vh]">
+    {
+      SCROLL_STATEMENTS.map((statement) => (
+        <div>
+          <h2>{statement.title}</h2>
+          <p>{statement.body}</p>
+        </div>
+      ))
+    }
+  </section>
+</Layout>
+
+<script>
+  import { onPage } from "@/lib/page-lifecycle"
+  import { initSceneScroll } from "@/lib/init-scene-scroll"
+
+  onPage("/", initSceneScroll)
+</script>

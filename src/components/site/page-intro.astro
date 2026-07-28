@@ -1,0 +1,25 @@
+---
+// Shared hero band for every page. Carries the DOM contract that
+// src/lib/page-intro.ts animates: `data-hero-reveal="top" | "bottom"` panels
+// slide in once the intro timeline reaches its reveal beat.
+
+interface Props {
+  title: string
+  subtitle?: string
+}
+
+const { title, subtitle } = Astro.props
+---
+
+<section>
+  <h1 data-hero-reveal="top">{title}</h1>
+  {subtitle && <p data-hero-reveal="bottom">{subtitle}</p>}
+</section>
+
+<style>
+  /* Hidden until the reveal animation runs, so panels don't flash in their
+     final position before GSAP takes over. */
+  [data-hero-reveal] {
+    opacity: 0;
+  }
+</style>

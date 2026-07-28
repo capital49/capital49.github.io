@@ -1,0 +1,236 @@
+---
+import "../styles/global.css"
+import { ClientRouter } from "astro:transitions"
+import SceneCanvas from "@/components/scene/scene-canvas"
+import SiteHeader from "@/components/site/site-header.astro"
+import { SITE } from "@/content/site"
+
+interface Props {
+  // Page-specific title, rendered as "<title> — Capital49"; omit for plain
+  // "Capital49".
+  title?: string
+  description?: string
+}
+
+const { title: pageTitle, description = SITE.description } = Astro.props
+
+const title = pageTitle ? `${pageTitle} — ${SITE.name}` : SITE.name
+---
+
+<!doctype html>
+<!-- transition:animate="none" is required: Astro's default cross-fade would
+     fight the overlay below and produce a visible double transition. -->
+<html lang="en" transition:animate="none">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <ClientRouter />
+  </head>
+  <body>
+    {
+      /* Explicit transition:persist ids: auto-generated ids are derived from the
+         element's position in each page's tree and can differ between routes,
+         which silently drops the persisted node and remounts it. */
+    }
+    <div
+      id="page-transition-overlay"
+      transition:persist="overlay"
+      class="fixed inset-0 z-100 bg-background"
+    >
+    </div>
+
+    {
+      /* z-0, NOT -z-10: the base layer paints body's opaque background, which
+         would cover a negatively-stacked canvas entirely. Page content sits
+         above at z-10. */
+    }
+    <div
+      id="scene-root"
+      class="pointer-events-none fixed inset-0 z-0"
+      transition:persist="scene"
+    >
+      {/* No props: keeps Astro's island prop-diff path from ever firing. */}
+      <SceneCanvas client:load />
+    </div>
+
+    <div class="relative z-10">
+      <SiteHeader />
+      <main>
+        <slot />
+      </main>
+    </div>
+
+    <script>
+      import { initSmoothScroll } from "@/lib/smooth-scroll"
+      import { onEveryPage } from "@/lib/page-lifecycle"
+      import { initPageIntro } from "@/lib/page-intro"
+
+      initSmoothScroll()
+      onEveryPage(initPageIntro)
+    </script>
+
+    <script>
+      import gsap from "gsap"
+      import { ScrollTrigger } from "gsap/ScrollTrigger"
+      import { lockScroll, unlockScroll } from "@/lib/smooth-scroll"
+
+      const OVERLAY_ID = "page-transition-overlay"
+      const BAR_ID = "page-transition-loading-bar"
+      let transitionActive = false
+
+      function getOverlay(): HTMLElement | null {
+        return document.getElementById(OVERLAY_ID)
+      }
+
+      function getBar(): HTMLElement | null {
+        return document.getElementById(BAR_ID)
+      }
+
+      function waitForFonts(): Promise<void> {
+        return document.fonts.ready.then(() => undefined)
+      }
+
+      // The canvas mounts once (Layout.astro, transition:persist), so
+      // "scene:ready" only ever fires on the initial load. __sceneReady is
+      // therefore sticky — never reset it on navigation, or every subsequent nav
+      // would block here until the 8s timeout.
+      function waitForScene(): Promise<void> {
+        if (window.__sceneReady) return Promise.resolve()
+        return new Promise<void>((resolve) => {
+          const timeout = setTimeout(resolve, 8000)
+          window.addEventListener(
+            "scene:ready",
+            () => {
+              clearTimeout(timeout)
+              resolve()
+            },
+            { once: true }
+          )
+        })
+      }
+
+      function delay(ms: number): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, ms))
+      }
+
+      async function waitForContent(): Promise<void> {
+        await Promise.all([waitForFonts(), waitForScene(), delay(300)])
+      }
+
+      function revealPage(): void {
+        const overlay = getOverlay()
+        if (!overlay) return
+
+        gsap.to(overlay, {
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.inOut",
+          onComplete: () => {
+            overlay.style.pointerEvents = "none"
+            window.__pageRevealed = true
+            window.dispatchEvent(new CustomEvent("page:revealed"))
+          },
+        })
+      }
+
+      function showOverlay(): Promise<void> {
+        const overlay = getOverlay()
+        if (!overlay) return Promise.resolve()
+
+        overlay.style.pointerEvents = "all"
+        gsap.set(overlay, { opacity: 0, clearProps: "transform" })
+
+        const bar = getBar()
+        if (bar) gsap.set(bar, { scaleX: 0 })
+
+        return new Promise<void>((resolve) => {
+          gsap.to(overlay, {
+            opacity: 1,
+            duration: 0.2,
+            ease: "power2.inOut",
+            onComplete: resolve,
+          })
+        })
+      }
+
+      async function loadAndReveal(isInitialLoad = false): Promise<void> {
+        // Hold scrolling while the overlay covers the screen so the
+        // scroll-linked scene can't be driven from ScrollTriggers that are still
+        // measured against the unsettled, pre-refresh layout (see the refresh
+        // below).
+        lockScroll()
+
+        const bar = getBar()
+        const contentPromise = waitForContent()
+
+        if (bar) {
+          gsap.set(bar, { scaleX: 0 })
+          gsap.to(bar, { scaleX: 0.75, duration: 0.7, ease: "power2.out" })
+        }
+
+        await contentPromise
+
+        if (bar) {
+          gsap.killTweensOf(bar)
+          await new Promise<void>((resolve) => {
+            gsap.to(bar, {
+              scaleX: 1,
+              duration: 0.5,
+              ease: "power2.out",
+              onComplete: resolve,
+            })
+          })
+        }
+
+        // On a hard refresh, Astro's ClientRouter restores the previous scroll
+        // position from history.state before the pinned ScrollTriggers build
+        // their pin-spacers, so it clamps mid-page. Force the top while the
+        // overlay still covers the screen so every reload starts at the hero.
+        // Only on initial load — client-side navigations keep Astro's own scroll
+        // handling (top for forward nav, restore for back/forward).
+        if (isInitialLoad) window.scrollTo(0, 0)
+
+        // ScrollTrigger's auto-refresh runs on window "load", which never fires
+        // again on a client-side navigation. The triggers were built during the
+        // swap against an unsettled layout (fonts loading, WebGL canvas
+        // mounting), so refresh their start/end while scroll is still locked,
+        // then release — the first scroll after the reveal then maps onto correct
+        // positions and the scene can't jump to the wrong progress.
+        ScrollTrigger.refresh()
+        unlockScroll()
+
+        revealPage()
+      }
+
+      loadAndReveal(true)
+
+      document.addEventListener("astro:before-preparation", (event) => {
+        transitionActive = true
+        // window.__sceneReady is intentionally NOT reset: the canvas is
+        // persisted across navigations, so it never remounts and can never
+        // dispatch "scene:ready" a second time. Clearing the flag here would
+        // deadlock waitForScene() for its full 8s timeout on every navigation.
+        window.__pageRevealed = false
+        window.__heroRevealed = false
+
+        const e = event as Event & { loader: () => Promise<void> }
+        const originalLoader = e.loader
+        e.loader = async () => {
+          await showOverlay()
+          await originalLoader()
+        }
+      })
+
+      document.addEventListener("astro:page-load", () => {
+        if (transitionActive) {
+          transitionActive = false
+          loadAndReveal()
+        }
+      })
+    </script>
+  </body>
+</html>

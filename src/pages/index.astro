@@ -1,30 +1,762 @@
 ---
-import Layout from "@/layouts/Layout.astro"
-import PageIntro from "@/components/site/page-intro.astro"
-import { HOME_HERO, SCROLL_STATEMENTS } from "@/content/home"
+import "../styles/global.css"
+import ContinuumCanvas from "@/components/continuum-canvas"
+
+// THE CONTINUUM — Capital 49.
+//
+// One substance, continuously reformed. A single particle system is the logo,
+// the ideas and the network: it condenses out of chaos straight into the
+// Capital 49 logotype, and is then scrubbed by the scroll through a Möbius
+// strip, a magnetic dipole, seven interlocking rings and a 49-node network
+// globe before closing on the same logo it opened with.
+//
+// Every morph detours 42% back through the 7 x 7 lattice at its midpoint, so no
+// form melts into the next — each one is re-born from the identity.
+//
+// The page has no DOM reveal animations of any kind. The type is set and still;
+// the sculpture is the only thing that moves.
+
+const SECTIONS = [
+  { id: "s1", index: "01", label: "Origin" },
+  { id: "s2", index: "02", label: "Deviation" },
+  { id: "s3", index: "03", label: "Dawn" },
+  { id: "s4", index: "04", label: "Lineage" },
+  { id: "s5", index: "05", label: "Network" },
+]
+
+const FOCUS = [
+  { index: "01", name: "AI" },
+  { index: "02", name: "Enterprise platforms" },
+  { index: "03", name: "Fintech & payments" },
+]
+
+const STATS = [
+  { n: "$200B", l: "Payments processed per year" },
+  { n: "200,000+", l: "Customers" },
+  { n: "200+", l: "Countries" },
+]
+
+// The designed static build: the 49 points with the mark held inside them —
+// the first frame and the last frame of the continuum, at rest.
+const PITCH = 70 / 6
+const DOTS = Array.from({ length: 49 }, (_, n) => ({
+  cx: 15 + (n % 7) * PITCH,
+  cy: 15 + Math.floor(n / 7) * PITCH,
+}))
 ---
 
-<Layout>
-  <PageIntro title={HOME_HERO.title} subtitle={HOME_HERO.subtitle} />
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Capital 49</title>
+    <meta
+      name="description"
+      content="Capital 49 — a new venture fund backed by the founders of Airwallex. For the exception, not the rule."
+    />
+    <script is:inline>
+      // Decided before first paint, so the static mark never flashes for readers
+      // who are about to get the canvas — and never fails to appear for readers
+      // who are not (no JS module support, no WebGL, reduced motion).
+      ;(function () {
+        try {
+          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+          if (!("noModule" in HTMLScriptElement.prototype)) return
+          var probe = document.createElement("canvas")
+          if (probe.getContext("webgl2") || probe.getContext("webgl")) {
+            document.documentElement.classList.add("live")
+          }
+        } catch (error) {
+          /* no canvas, no class: the static mark stands in */
+        }
+      })()
+    </script>
+  </head>
 
-  <!-- Scroll track for the 3D mark: initSceneScroll() scrubs this element's
-       scroll range into the scene's rotation / z-travel. Must stay tall enough
-       to scroll. -->
-  <section data-scene-scroll class="min-h-[300vh]">
-    {
-      SCROLL_STATEMENTS.map((statement) => (
-        <div>
-          <h2>{statement.title}</h2>
-          <p>{statement.body}</p>
+  <body>
+    <!-- The 7 x 7 page grid: the lattice the sculpture keeps returning to,
+         printed flat behind everything so the 2D and 3D layers share a spine. -->
+    <div class="lattice" aria-hidden="true"></div>
+
+    <div id="scene" aria-hidden="true">
+      <ContinuumCanvas client:load />
+    </div>
+
+    <div class="static-mark" aria-hidden="true">
+      <svg viewBox="0 0 100 100" width="100%" height="100%">
+        {DOTS.map((d) => <circle cx={d.cx} cy={d.cy} r="0.85" fill="#fff" opacity="0.24" />)}
+        <text
+          x="50"
+          y="50"
+          text-anchor="middle"
+          dominant-baseline="central"
+          font-family="'IBM Plex Sans Variable', 'IBM Plex Sans', sans-serif"
+          font-weight="500"
+          font-size="46"
+          letter-spacing="-2.2"
+          fill="#fff"
+          opacity="0.8">49</text
+        >
+      </svg>
+    </div>
+
+    <header class="site-head">
+      <a class="wordmark" href="#s1">Capital&nbsp;49</a>
+      <a class="contact" href="mailto:info@capital49.com">Contact</a>
+    </header>
+
+    <nav class="rail" aria-label="Sections">
+      {
+        SECTIONS.map((section, i) => (
+          <a
+            class="tick"
+            href={`#${section.id}`}
+            data-tick={i}
+            data-active={i === 0 ? "true" : "false"}
+          >
+            <span class="label">
+              {section.index} — {section.label}
+            </span>
+            <span class="bar" />
+          </a>
+        ))
+      }
+    </nav>
+
+    <main>
+      <!-- 01 ─ THE "49" ───────────────────────────────────────── centre ── -->
+      <section id="s1" data-section class="sect sect-hero">
+        <div class="shell g7">
+          <div class="c7 mid">
+            <p class="eyebrow">01 — Origin</p>
+            <h1 class="display balance">For the exception, not the rule</h1>
+            <p class="lede lede-mid">
+              A new venture fund backed by the founders of Airwallex
+            </p>
+          </div>
         </div>
-      ))
-    }
-  </section>
-</Layout>
 
-<script>
-  import { onPage } from "@/lib/page-lifecycle"
-  import { initSceneScroll } from "@/lib/init-scene-scroll"
+        <div class="shell cue-row">
+          <span class="cue"><span class="cue-line"></span>Scroll</span>
+          <span class="meta">One substance — 49 = 7 × 7</span>
+        </div>
+      </section>
 
-  onPage("/", initSceneScroll)
-</script>
+      <!-- 02 ─ MÖBIUS ──────────────────────────────────────────── left ── -->
+      <section id="s2" data-section data-stage="1" class="sect">
+        <div class="shell g7">
+          <div class="c7 lg-c3">
+            <p class="eyebrow">02 — Deviation</p>
+            <h2 class="headline">Bold and daring, by design</h2>
+            <p class="lede stack-md">
+              We work with exceptional founders who believe, like us, that great
+              products challenge the status quo and change the way the world
+              works
+            </p>
+            <p class="note">
+              A single surface with one side and one edge. Follow the rule all
+              the way round and you arrive on the other face.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 ─ DIPOLE ─────────────────────────────────────────── right ── -->
+      <section id="s3" data-section data-stage="2" class="sect">
+        <div class="shell g7">
+          <div class="c7 lg-s5 lg-c3">
+            <p class="eyebrow">03 — Dawn</p>
+            <h2 class="headline">The dawning of a new, intelligent era</h2>
+            <p class="lede stack-md">
+              We invest in AI, enterprise platforms &amp; fintech/payments
+            </p>
+
+            <ul class="rows stack-xl">
+              {
+                FOCUS.map((row) => (
+                  <li class="row">
+                    <span class="idx">{row.index}</span>
+                    <span class="name">{row.name}</span>
+                    <span class="arrow">—</span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04 ─ SEVEN RINGS ─────────────────────────────────────── left ── -->
+      <section id="s4" data-section data-stage="3" class="sect">
+        <div class="shell g7">
+          <div class="c7 lg-c3">
+            <p class="eyebrow">04 — Lineage</p>
+            <h2 class="headline">Capital 49 × Airwallex</h2>
+            <p class="lede stack-md">
+              We understand what it's like to build something from nothing.
+              Airwallex processes $200 billion of payments per year across
+              200,000+ customers and 200+ countries. We're uniquely positioned to
+              help you navigate the challenges of hypergrowth.
+            </p>
+          </div>
+
+          <div class="c7 lg-c4 stats">
+            {
+              STATS.map((stat) => (
+                <div class="stat">
+                  <p class="n">{stat.n}</p>
+                  <p class="l">{stat.l}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- 05 ─ NETWORK GLOBE ──────────────────────────────────── right ── -->
+      <section id="s5" data-section data-stage="4" class="sect">
+        <div class="shell g7">
+          <div class="c7 lg-s5 lg-c3">
+            <p class="eyebrow">05 — Network</p>
+            <h2 class="headline">An unfair advantage for founders</h2>
+            <p class="lede stack-md">
+              Our team has experience building some of the world's top startups.
+              Work with us and get access to a global Airwallex network that
+              includes potential customers, providers and advisors.
+            </p>
+            <p class="note">
+              Forty-nine nodes, wired on great circles. Every one of them is a
+              point of the same lattice you started on.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ─ RETURN ──────────────────────────────────────────────── centre ── -->
+    <footer data-stage="5">
+      <div class="shell foot">
+        <p class="eyebrow">Return</p>
+        <a class="talk" href="mailto:info@capital49.com">Talk to us</a>
+        <p class="lede lede-mid stack-lg">
+          The same forty-nine points you arrived on, opened out around the type.
+        </p>
+        <div class="foot-rule"></div>
+        <div class="foot-row">
+          <span class="wordmark">Capital&nbsp;49</span>
+          <span class="meta">49 = 7 × 7</span>
+          <span class="meta">Est. 2021 — San Francisco</span>
+        </div>
+      </div>
+    </footer>
+
+    <style is:global>
+      html {
+        background: #000;
+        scrollbar-width: none;
+      }
+      html::-webkit-scrollbar {
+        display: none;
+      }
+      body {
+        background: #000;
+        color: #fff;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+      ::selection {
+        background: #fff;
+        color: #000;
+      }
+
+      /* ── Layer stack ────────────────────────────────────────────────── */
+      .lattice,
+      #scene,
+      .static-mark {
+        position: fixed;
+        pointer-events: none;
+      }
+      .lattice {
+        inset: 0;
+        z-index: 0;
+        /* 7 columns, 7 rows, a point at every intersection. */
+        background-image:
+          radial-gradient(
+            circle at 0 0,
+            rgba(255, 255, 255, 0.22) 1.1px,
+            transparent 1.6px
+          ),
+          linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.05) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.04) 1px,
+            transparent 1px
+          );
+        background-size: calc(100% / 7) calc(100% / 7);
+      }
+      #scene {
+        inset: 0;
+        z-index: 1;
+      }
+      main,
+      footer {
+        position: relative;
+        z-index: 10;
+      }
+      .site-head,
+      .rail {
+        position: fixed;
+        z-index: 30;
+        mix-blend-mode: difference;
+      }
+
+      /* ── Type ───────────────────────────────────────────────────────── */
+      .eyebrow {
+        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
+        font-size: 0.6875rem;
+        font-weight: 400;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.44);
+        font-variant-numeric: tabular-nums;
+      }
+      .display {
+        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
+        font-weight: 300;
+        font-size: clamp(2.6rem, 7.4vw, 6.5rem);
+        line-height: 0.95;
+        letter-spacing: -0.04em;
+        margin-top: clamp(1.25rem, 2.4vw, 2.25rem);
+      }
+      .headline {
+        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
+        font-weight: 300;
+        font-size: clamp(2rem, 4.6vw, 4rem);
+        line-height: 1;
+        letter-spacing: -0.032em;
+        margin-top: clamp(1rem, 1.8vw, 1.6rem);
+      }
+      .balance {
+        text-wrap: balance;
+      }
+      .lede {
+        font-size: clamp(0.95rem, 1vw, 1.125rem);
+        line-height: 1.64;
+        color: rgba(255, 255, 255, 0.6);
+        max-width: 44ch;
+        text-wrap: pretty;
+      }
+      .note {
+        margin-top: clamp(1.75rem, 3vw, 2.75rem);
+        padding-top: clamp(0.85rem, 1.4vw, 1.15rem);
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        max-width: 36ch;
+        font-size: 0.8125rem;
+        line-height: 1.7;
+        color: rgba(255, 255, 255, 0.42);
+      }
+      .meta {
+        font-size: 0.6875rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.34);
+      }
+      .wordmark {
+        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: #fff;
+      }
+      .contact {
+        font-size: 0.6875rem;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.5);
+        transition: color 0.35s ease;
+      }
+      .contact:hover {
+        color: #fff;
+      }
+      .stack-md {
+        margin-top: clamp(1.5rem, 2.4vw, 2rem);
+      }
+      .stack-lg {
+        margin-top: clamp(2rem, 3.2vw, 2.75rem);
+      }
+      .stack-xl {
+        margin-top: clamp(2.5rem, 4vw, 3.5rem);
+      }
+
+      /* ── Structure ──────────────────────────────────────────────────── */
+      .shell {
+        width: 100%;
+        max-width: 1560px;
+        margin-inline: auto;
+        padding-inline: clamp(1.25rem, 4.2vw, 4.5rem);
+      }
+      .g7 {
+        display: grid;
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+        column-gap: clamp(1rem, 2vw, 2.5rem);
+        row-gap: clamp(2.5rem, 5vw, 4rem);
+        align-items: start;
+      }
+      .c7 {
+        grid-column: span 7 / span 7;
+      }
+      /* The zigzag: copy sits centre / left / right / left / right / centre, so
+         the viewport centre is never occupied by type and the sculpture always
+         has the side the copy just vacated. */
+      @media (min-width: 1024px) {
+        .lg-c3 {
+          grid-column: span 3 / span 3;
+        }
+        /* Explicit start: auto-placement would otherwise tuck the stats into
+           the empty right-hand columns, straight through the sculpture. */
+        .lg-c4 {
+          grid-column: 1 / span 4;
+        }
+        .lg-s5 {
+          grid-column-start: 5;
+        }
+      }
+      .sect {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 100svh;
+        padding-block: clamp(7rem, 14vh, 11rem);
+      }
+      .sect-hero {
+        justify-content: flex-end;
+        gap: clamp(3rem, 8vh, 6rem);
+      }
+      .mid {
+        text-align: center;
+      }
+      .lede-mid {
+        margin-inline: auto;
+      }
+      .site-head {
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        padding: clamp(1.25rem, 2.6vw, 2.25rem) clamp(1.25rem, 4.2vw, 4.5rem);
+      }
+      /* ── Footer: the return ─────────────────────────────────────────── */
+      footer {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 88svh;
+        padding-block: clamp(6rem, 12vh, 9rem);
+        text-align: center;
+      }
+      .talk {
+        display: block;
+        margin-top: clamp(1.5rem, 3vw, 2.5rem);
+        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
+        font-weight: 300;
+        font-size: clamp(3rem, 10vw, 8rem);
+        line-height: 0.9;
+        letter-spacing: -0.042em;
+        color: #fff;
+        text-decoration: none;
+        transition: opacity 0.4s ease;
+      }
+      .talk:hover {
+        opacity: 0.72;
+      }
+      .foot-rule {
+        margin-top: clamp(4rem, 10vh, 7rem);
+        height: 1px;
+        background: rgba(255, 255, 255, 0.12);
+      }
+      .foot-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem 2rem;
+        align-items: baseline;
+        justify-content: space-between;
+        padding-top: clamp(1.25rem, 2.4vw, 1.75rem);
+      }
+
+      /* ── Rail ───────────────────────────────────────────────────────── */
+      .rail {
+        display: none;
+        right: clamp(1.25rem, 2.4vw, 2.25rem);
+        top: 50%;
+        transform: translateY(-50%);
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.85rem;
+      }
+      @media (min-width: 1024px) {
+        .rail {
+          display: flex;
+        }
+      }
+      .tick {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        color: rgba(255, 255, 255, 0.32);
+        font-size: 0.625rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        text-decoration: none;
+        font-variant-numeric: tabular-nums;
+        transition: color 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .tick .bar {
+        width: 16px;
+        height: 1px;
+        background: currentColor;
+        transition: width 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .tick .label {
+        opacity: 0;
+        transform: translateX(6px);
+        transition:
+          opacity 0.45s ease,
+          transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .tick:hover {
+        color: rgba(255, 255, 255, 0.85);
+      }
+      .tick:hover .label,
+      .tick[data-active="true"] .label {
+        opacity: 1;
+        transform: none;
+      }
+      .tick[data-active="true"] {
+        color: #fff;
+      }
+      .tick[data-active="true"] .bar,
+      .tick:hover .bar {
+        width: 42px;
+      }
+
+      /* ── Rows, stats, cue ───────────────────────────────────────────── */
+      .rows {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+      .row {
+        display: grid;
+        grid-template-columns: 3.25rem 1fr auto;
+        align-items: baseline;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        padding-block: clamp(0.9rem, 1.8vw, 1.35rem);
+        color: rgba(255, 255, 255, 0.72);
+        transition:
+          color 0.4s ease,
+          padding-left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .row:hover {
+        color: #fff;
+        padding-left: 0.85rem;
+      }
+      .row .idx {
+        font-size: 0.625rem;
+        letter-spacing: 0.24em;
+        color: rgba(255, 255, 255, 0.3);
+        font-variant-numeric: tabular-nums;
+      }
+      .row .name {
+        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
+        font-weight: 300;
+        font-size: clamp(1.05rem, 1.6vw, 1.5rem);
+        letter-spacing: -0.02em;
+      }
+      .row .arrow {
+        opacity: 0;
+        transform: translateX(-8px);
+        transition:
+          opacity 0.4s ease,
+          transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .row:hover .arrow {
+        opacity: 0.6;
+        transform: none;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));
+        gap: clamp(1.25rem, 2.4vw, 2.25rem);
+      }
+      .stat {
+        border-top: 1px solid rgba(255, 255, 255, 0.18);
+        padding-top: clamp(0.75rem, 1.4vw, 1.1rem);
+        transition: border-color 0.5s ease;
+      }
+      .stat:hover {
+        border-color: #fff;
+      }
+      .stat .n {
+        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
+        font-weight: 300;
+        font-size: clamp(1.6rem, 2.8vw, 2.5rem);
+        letter-spacing: -0.03em;
+        font-variant-numeric: tabular-nums;
+      }
+      .stat .l {
+        margin-top: 0.5rem;
+        font-size: 0.6875rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.42);
+      }
+
+      .cue-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .cue {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.625rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.45);
+      }
+      .cue-line {
+        display: block;
+        position: relative;
+        width: 46px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.25);
+        overflow: hidden;
+      }
+      .cue-line::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: #fff;
+        transform-origin: left;
+        animation: cue 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+      }
+      @keyframes cue {
+        0% {
+          transform: scaleX(0);
+          transform-origin: left;
+        }
+        45% {
+          transform: scaleX(1);
+          transform-origin: left;
+        }
+        55% {
+          transform: scaleX(1);
+          transform-origin: right;
+        }
+        100% {
+          transform: scaleX(0);
+          transform-origin: right;
+        }
+      }
+
+      /* ── The designed static build ──────────────────────────────────── */
+      /* Shown whenever the sculpture cannot run: reduced motion, no WebGL, no
+         modules. The mark held inside the 49 points — the continuum, at rest. */
+      .static-mark {
+        top: 50%;
+        left: 50%;
+        width: min(52vh, 52vw);
+        height: min(52vh, 52vw);
+        transform: translate(-50%, -50%);
+        z-index: 1;
+      }
+      html.live .static-mark {
+        display: none;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .cue-line::after {
+          animation: none;
+          transform: scaleX(0.4);
+        }
+        *,
+        *::before,
+        *::after {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+      }
+
+      /* Narrow viewports: the sculpture sits above the copy rather than beside
+         it (see continuum-field.tsx), so the copy hangs off the bottom of each
+         section and the particles dim to keep the type crisp. */
+      @media (max-width: 900px) {
+        #scene {
+          opacity: 0.45;
+        }
+        .sect {
+          justify-content: flex-end;
+          padding-bottom: clamp(4rem, 12vh, 7rem);
+        }
+        .lede {
+          max-width: 38ch;
+        }
+      }
+    </style>
+
+    <script>
+      import gsap from "gsap"
+      import { ScrollTrigger } from "gsap/ScrollTrigger"
+      import Lenis from "lenis"
+
+      gsap.registerPlugin(ScrollTrigger)
+
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+      // Smooth scroll on pointer devices only, driven off GSAP's ticker so the
+      // scrubbed morphs stay locked to the smoothed scroll position rather than
+      // trailing it.
+      if (!reduced && window.matchMedia("(min-width: 768px)").matches) {
+        const lenis = new Lenis({ autoRaf: false, lerp: 0.1 })
+        lenis.on("scroll", ScrollTrigger.update)
+        gsap.ticker.add((time) => lenis.raf(time * 1000))
+        gsap.ticker.lagSmoothing(0)
+      }
+
+      // The rail is the page's only piece of scripted DOM state. There are no
+      // reveal animations on this page by design: the type is set and still.
+      const ticks = Array.from(document.querySelectorAll<HTMLElement>(".tick"))
+      Array.from(
+        document.querySelectorAll<HTMLElement>("section[data-section]")
+      ).forEach((section, index) => {
+        ScrollTrigger.create({
+          trigger: section,
+          start: "top 55%",
+          end: "bottom 55%",
+          onToggle: (self) => {
+            if (!self.isActive) return
+            ticks.forEach((tick, i) => {
+              tick.dataset.active = i === index ? "true" : "false"
+            })
+          },
+        })
+      })
+
+      // The morphs are measured against the final layout; fonts landing late
+      // would otherwise shift every start point.
+      document.fonts.ready.then(() => ScrollTrigger.refresh())
+    </script>
+  </body>
+</html>

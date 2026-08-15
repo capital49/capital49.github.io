@@ -20,6 +20,9 @@ importers:
       '@fontsource-variable/roboto':
         specifier: ^5.3.0
         version: 5.3.0
+      '@fontsource/ibm-plex-sans-condensed':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@gsap/react':
         specifier: ^2.1.2
         version: 2.1.2(gsap@3.15.0)(react@19.2.8)
@@ -654,6 +657,9 @@ packages:
 
   '@fontsource-variable/roboto@5.3.0':
     resolution: {integrity: sha512-BoaaZiQf8fgtxv07KXkTwx1bKz/EoqIlTXq2OOKKXINxp6qXWdnlChqV+hSaDANS49yyUASFl3OVBMMDTCIHFA==}
+
+  '@fontsource/ibm-plex-sans-condensed@5.3.0':
+    resolution: {integrity: sha512-fQyBpwbkguP4azjq7Cw8h/J3C/d8MFAzXOiSoFxyKCUK4x0XKrWEh3tGdTxhDM0HctVRQilQo1zGoyxDHLm5jQ==}
 
   '@gsap/react@2.1.2':
     resolution: {integrity: sha512-JqliybO1837UcgH2hVOM4VO+38APk3ECNrsuSM4MuXp+rbf+/2IG2K1YJiqfTcXQHH7XlA0m3ykniFYstfq0Iw==}
@@ -3953,6 +3959,8 @@ snapshots:
   '@fontsource-variable/ibm-plex-sans@5.3.0': {}
 
   '@fontsource-variable/roboto@5.3.0': {}
+
+  '@fontsource/ibm-plex-sans-condensed@5.3.0': {}
 
   '@gsap/react@2.1.2(gsap@3.15.0)(react@19.2.8)':
     dependencies:

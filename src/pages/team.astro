@@ -1,0 +1,123 @@
+---
+import PageShell from "../layouts/PageShell.astro"
+import { TEAM, TEAM_INTRO, TEAM_TAGLINE } from "../data/team"
+
+// The team page — the ledger of /team-1 crossed with the contact sheet of
+// /team-2: four hairline rows, each holding its portrait and bio in plain
+// sight. Nothing is filed away behind a hover; approach only sharpens the row.
+---
+
+<PageShell
+  title="Team — Capital 49"
+  description="The Capital 49 team — conviction-led, partnership-driven."
+  eyebrow="07 — Team"
+  heading={TEAM_TAGLINE}
+  lede={TEAM_INTRO}
+>
+  <section class="shell band">
+    <ul class="members">
+      {
+        TEAM.map((m, i) => (
+          <li class="member">
+            <span class="idx">{String(i + 1).padStart(2, "0")}</span>
+            <img class="portrait" src={m.img} alt={m.name} loading="lazy" />
+            <div class="copy">
+              <h2 class="name">{m.name}</h2>
+              <p class="bio">{m.bio}</p>
+            </div>
+            <span class="role">{m.role}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</PageShell>
+
+<style>
+  .band {
+    padding-block: clamp(3.5rem, 8vh, 6rem) 0;
+  }
+  .members {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+  .member {
+    display: grid;
+    grid-template-columns: clamp(2.5rem, 4vw, 4rem) auto minmax(0, 1fr) auto;
+    column-gap: clamp(1.5rem, 3vw, 3.5rem);
+    align-items: start;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-block: clamp(1.75rem, 3.6vw, 3rem);
+    transition: padding-left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .member:hover {
+    padding-left: clamp(0.5rem, 1.4vw, 1.25rem);
+  }
+  .idx {
+    padding-top: 0.5rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.24em;
+    color: rgba(255, 255, 255, 0.3);
+    font-variant-numeric: tabular-nums;
+  }
+  .portrait {
+    width: clamp(150px, 16vw, 220px);
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    filter: grayscale(1);
+  }
+  .name {
+    margin: 0;
+    font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
+    font-weight: 300;
+    font-size: clamp(1.75rem, 3.4vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: rgba(255, 255, 255, 0.72);
+    transition: color 0.4s ease;
+  }
+  .member:hover .name {
+    color: #fff;
+  }
+  .bio {
+    margin: clamp(1rem, 1.8vw, 1.5rem) 0 0;
+    max-width: 52ch;
+    font-size: clamp(0.875rem, 0.95vw, 1rem);
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.6);
+    text-wrap: pretty;
+  }
+  .role {
+    padding-top: 0.5rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.44);
+  }
+
+  @media (max-width: 760px) {
+    .member {
+      grid-template-columns: 1fr auto;
+      row-gap: 1.25rem;
+    }
+    .idx {
+      padding-top: 0;
+      grid-row: 1;
+    }
+    .role {
+      padding-top: 0;
+      grid-row: 1;
+      grid-column: 2;
+      justify-self: end;
+    }
+    .portrait {
+      grid-column: 1 / -1;
+      width: clamp(150px, 40vw, 220px);
+    }
+    .copy {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

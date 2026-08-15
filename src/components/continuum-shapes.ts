@@ -22,16 +22,17 @@ export const MOBILE_PER_NODE = 100 // 4,900 particles
 export const GRID_SPACING = 0.86 // the 7 x 7 lattice spans 5.16
 export const GLYPH_WIDTH = 6.1
 export const GLYPH_HEIGHT = 4.3
-export const RING_RADIUS = 2.15
-export const GLOBE_RADIUS = 2.72
+export const NETGRID_SPACING = 0.84 // the network's 7 x 7 grid spans 5.04
 // Mirrored in the vertex shader, which evaluates the Möbius per frame so the
-// points flow along the strip instead of sitting on it.
-export const MOBIUS_RADIUS = 2.05
-export const MOBIUS_WIDTH = 0.62
+// points flow along the strip instead of sitting on it. The centre line is a
+// figure-eight (Gerono lemniscate): x = A cos u, y = B sin u cos u, lifted
+// ±LIFT out of plane so the two strands clear each other at the crossover.
+export const MOBIUS_A = 2.5 // half-span of the eight
+export const MOBIUS_B = 1.7 // lobe height = B / 2
+export const MOBIUS_LIFT = 0.4
+export const MOBIUS_WIDTH = 0.8 // band half-width
 
 const TAU = Math.PI * 2
-// Golden angle — the phyllotaxis constant that spreads the rings and globe nodes.
-const GOLDEN_ANGLE = Math.PI * (3 - Math.sqrt(5))
 
 // Deterministic PRNG (mulberry32). Each generator seeds its own, so the
 // composition is art-directed and identical on every load, in any call order.
@@ -79,7 +80,10 @@ export function buildLattice(count: number): Float32Array {
 // from its PNG's alpha channel. Async: resolves once the image has decoded.
 // Returns null if the image or the 2D context is unavailable, in which case the
 // caller keeps whatever it seeded the attribute with.
-export async function sampleLogo(count: number): Promise<Float32Array | null> {
+export async function sampleLogo(
+  count: number,
+  iconOnly = false,
+): Promise<Float32Array | null> {
   if (typeof document === "undefined") return null
   const image = new Image()
   image.src = "/logos/Capital49-logo-horizontal-white.png"
@@ -100,6 +104,36 @@ export async function sampleLogo(count: number): Promise<Float32Array | null> {
 
   // The PNG is white on transparent, so alpha is a perfect logo mask.
   const img = ctx.getImageData(0, 0, w, h).data
+
+  // The bars icon sits left of the wordmark, separated by the widest empty
+  // column run in the image. With iconOnly, everything right of it is dropped.
+  let cutoff = w
+  if (iconOnly) {
+    const occupied = new Uint8Array(w)
+    for (let px = 0; px < w; px++) {
+      for (let py = 0; py < h; py++) {
+        if (img[(py * w + px) * 4 + 3] > 110) {
+          occupied[px] = 1
+          break
+        }
+      }
+    }
+    let started = false
+    let run = 0
+    let gapStart = 0
+    const minRun = Math.max(4, Math.round(w * 0.025))
+    for (let px = 0; px < w && cutoff === w; px++) {
+      if (occupied[px]) {
+        started = true
+        run = 0
+      } else if (started) {
+        if (run === 0) gapStart = px
+        run++
+        if (run >= minRun) cutoff = gapStart
+      }
+    }
+  }
+
   const xs: number[] = []
   const ys: number[] = []
   const gap = 3
@@ -108,7 +142,7 @@ export async function sampleLogo(count: number): Promise<Float32Array | null> {
   let minY = h
   let maxY = 0
   for (let py = 0; py < h; py += gap) {
-    for (let px = 0; px < w; px += gap) {
+    for (let px = 0; px < cutoff; px += gap) {
       if (img[(py * w + px) * 4 + 3] > 110) {
         xs.push(px)
         ys.push(py)
@@ -156,174 +190,160 @@ export async function sampleLogo(count: number): Promise<Float32Array | null> {
 export function buildMobiusUV(count: number): Float32Array {
   const out = new Float32Array(count * 2)
   const r = prng(1121)
+  // Stratified slots keep the strip evenly loaded; the shuffle decorrelates the
+  // slot from the particle index. Without it, each 49th of the index range (one
+  // lattice/logo cluster) owns one contiguous arc, and the morphs read as 49
+  // chunks flying to 49 segments instead of one cloud dissolving onto the strip.
+  const order = new Uint32Array(count)
+  for (let i = 0; i < count; i++) order[i] = i
+  for (let i = count - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1))
+    const tmp = order[i]
+    order[i] = order[j]
+    order[j] = tmp
+  }
   for (let i = 0; i < count; i++) {
-    // Stratified in u so the strip is evenly loaded, jittered so it is not a comb.
-    out[i * 2] = ((i + r()) / count) * TAU
+    out[i * 2] = ((order[i] + r()) / count) * TAU
     out[i * 2 + 1] = r() * 2 - 1
   }
   return out
 }
 
-// ── THE DIPOLE ──────────────────────────────────────────────────────────────
-// 49 field lines — 7 meridian planes x 7 shells — around a +Y axis, plus a dense
-// core. The invisible force made legible: nothing is added, the substance simply
-// arranges itself along a law.
-export function buildDipole(count: number): Float32Array {
-  const out = alloc(count)
-  const r = prng(707)
-  const perLine = Math.floor((count * 0.97) / NODE_COUNT)
-  let idx = 0
+// ── THE VORTEX ──────────────────────────────────────────────────────────────
+// 49 strands growing out of a single point on the ground. Each one is a helix
+// that hugs the stem, then flares into its own sweeping arc — a few never
+// leave the floor and lay flat loops around the base instead. One origin,
+// many trajectories: the dawn.
+//
+// Mirrored in the vertex shader: the Möbius -> vortex morph collapses into
+// this point before growing back out.
+export const VORTEX_BASE_Y = -2.6
 
-  for (let m = 0; m < GRID_SIDE; m++) {
-    const phi = (m / GRID_SIDE) * TAU
-    const cp = Math.cos(phi)
-    const sp = Math.sin(phi)
-    for (let shell = 0; shell < GRID_SIDE; shell++) {
-      const L = 0.72 + shell * 0.29
-      for (let k = 0; k < perLine && idx < count; k++) {
-        const th = 0.16 + (Math.PI - 0.32) * (k / (perLine - 1))
-        const st = Math.sin(th)
-        const rad = L * st * st
-        const rr = rad * st
-        const j = idx * 3
-        out[j] = rr * cp + (r() - 0.5) * 0.018
-        out[j + 1] = rad * Math.cos(th) + (r() - 0.5) * 0.018
-        out[j + 2] = rr * sp + (r() - 0.5) * 0.018
-        idx++
-      }
+// Returns the positions plus, for the shader's growth animation: each
+// particle's parameter along its strand (grow: 0 = the origin, 1 = the tip)
+// and its strand's helix constants (strandA: phase, turns in radians, radius;
+// strandB: flare exponent, height) — so the shader can re-evaluate the strand
+// at any parameter and walk a particle *along* its branch.
+export function buildVortex(count: number): {
+  positions: Float32Array
+  grow: Float32Array
+  strandA: Float32Array
+  strandB: Float32Array
+} {
+  const out = alloc(count)
+  const grow = new Float32Array(count)
+  const strandA = new Float32Array(count * 3)
+  const strandB = new Float32Array(count * 2)
+  const r = prng(303)
+  const perLine = count / NODE_COUNT
+
+  for (let n = 0; n < NODE_COUNT; n++) {
+    const grounded = r() < 0.16
+    const phase = r() * TAU
+    const turns = grounded ? 1 + r() * 0.8 : 1.6 + r() * 1.9
+    const height = grounded ? 0.15 + r() * 0.3 : 2.2 + r() * 3.1
+    const radius = grounded ? 2.2 + r() * 1.4 : 1.1 + r() * 2.6
+    // How long the strand hugs the stem before flaring out.
+    const flare = grounded ? 0.45 : 1.9 + r() * 1.3
+
+    for (let k = 0; k < perLine; k++) {
+      const u = (k + r()) / perLine
+      // Sampling biased toward t = 0, so the shared origin reads as a dense stem.
+      const t = Math.pow(u, 1.35)
+      const a = phase + turns * TAU * t
+      const rad = radius * Math.pow(t, flare)
+      const idx = n * perLine + k
+      const i = idx * 3
+      grow[idx] = t
+      strandA[i] = phase
+      strandA[i + 1] = turns * TAU
+      strandA[i + 2] = radius
+      strandB[idx * 2] = flare
+      strandB[idx * 2 + 1] = height
+      out[i] = Math.cos(a) * rad + (r() - 0.5) * 0.03
+      out[i + 1] = VORTEX_BASE_Y + height * t + (r() - 0.5) * 0.03
+      out[i + 2] = Math.sin(a) * rad + (r() - 0.5) * 0.03
     }
   }
-  // Whatever is left forms the core the lines run out of.
-  while (idx < count) {
-    const rad = 0.28 * Math.cbrt(r())
-    const a = r() * TAU
-    const b = Math.acos(2 * r() - 1)
-    const j = idx * 3
-    out[j] = rad * Math.sin(b) * Math.cos(a)
-    out[j + 1] = rad * Math.cos(b)
-    out[j + 2] = rad * Math.sin(b) * Math.sin(a)
-    idx++
-  }
-  return out
+  return { positions: out, grow, strandA, strandB }
 }
 
-// ── SEVEN RINGS ─────────────────────────────────────────────────────────────
-// Seven interlocking rings, each in its own plane, normals Fibonacci-spread over
-// a hemisphere so they weave through one another instead of converging.
-export function buildRings(count: number): Float32Array {
-  const out = alloc(count)
+// ── THREE RINGS · VILLARCEAU WREATH ─────────────────────────────────────────
+// Three Villarceau circles of one torus. Every such circle threads through
+// every other, so the three interlock as a woven torus knot rather than a
+// globe of hoops. Only (ring angle, orbit angle) is stored — the circle
+// itself is evaluated per frame in the vertex shader, so the particles orbit
+// along their own rings.
+export const RING_COUNT = 3
+export const RING_MAJOR = 2.3 // Villarceau radius = the torus' major radius
+export const RING_MINOR = 1.15 // tube radius; sin(plane tilt) = MINOR / MAJOR
+export function buildRingUV(count: number): Float32Array {
+  const out = new Float32Array(count * 2)
   const r = prng(3131)
-  const perRing = count / GRID_SIDE
-
-  for (let ring = 0; ring < GRID_SIDE; ring++) {
-    const y = 1 - ((ring + 0.5) / GRID_SIDE) * 1.4
-    const radial = Math.sqrt(Math.max(0, 1 - y * y))
-    const phi = ring * GOLDEN_ANGLE
-    const nx = Math.cos(phi) * radial
-    const ny = y
-    const nz = Math.sin(phi) * radial
-
-    // Orthonormal basis for the ring plane. `up` swaps axes near the pole so the
-    // cross product never degenerates.
-    const upX = Math.abs(ny) > 0.9 ? 1 : 0
-    const upY = Math.abs(ny) > 0.9 ? 0 : 1
-    let ux = -nz * upY
-    let uy = nz * upX
-    let uz = nx * upY - ny * upX
-    const ul = Math.hypot(ux, uy, uz) || 1
-    ux /= ul
-    uy /= ul
-    uz /= ul
-    const vx = ny * uz - nz * uy
-    const vy = nz * ux - nx * uz
-    const vz = nx * uy - ny * ux
-
-    for (let k = 0; k < perRing; k++) {
-      const a = (k / perRing) * TAU
-      const c = Math.cos(a) * RING_RADIUS
-      const s = Math.sin(a) * RING_RADIUS
-      const i = (ring * perRing + k) * 3
-      out[i] = ux * c + vx * s + (r() - 0.5) * 0.07
-      out[i + 1] = uy * c + vy * s + (r() - 0.5) * 0.07
-      out[i + 2] = uz * c + vz * s + (r() - 0.5) * 0.07
-    }
+  const perRing = count / RING_COUNT
+  // Stratified slots keep each ring evenly loaded; the shuffle decorrelates
+  // ring and arc position from the particle index, so morphs read as one
+  // cloud dissolving onto the rings rather than clusters flying to segments.
+  const order = new Uint32Array(count)
+  for (let i = 0; i < count; i++) order[i] = i
+  for (let i = count - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1))
+    const tmp = order[i]
+    order[i] = order[j]
+    order[j] = tmp
+  }
+  for (let i = 0; i < count; i++) {
+    // Which of the three circles, as its rotation around the torus axis...
+    out[i * 2] = (Math.floor(order[i] / perRing) / RING_COUNT) * TAU
+    // ...and where on it — stratified so the ring is evenly loaded, jittered
+    // so it is not a comb.
+    out[i * 2 + 1] = (((order[i] % perRing) + r()) / perRing) * TAU
   }
   return out
 }
 
-// ── THE NETWORK GLOBE ───────────────────────────────────────────────────────
-// The same 49 lattice points, lifted onto a sphere and wired: each node keeps a
-// tight cluster and spends the rest of its share on a great-circle arc to its
-// nearest neighbour — every seventh node throwing a chord clean through the
-// middle instead, so the web reads as volume rather than skin.
-export function buildGlobe(count: number): Float32Array {
+// ── THE NETWORK GRID ────────────────────────────────────────────────────────
+// The 49 lattice points as a flat 7 x 7 grid facing the camera: a small
+// wireframe cube sits on every intersection, and the rest of each node's share
+// runs along the grid lines to its right and lower neighbours, so the lines
+// tile into a complete net with no doubled edges.
+export function buildNetGrid(count: number): Float32Array {
   const out = alloc(count)
   const r = prng(200)
   const perNode = count / NODE_COUNT
-
-  const nodes: Array<[number, number, number]> = []
-  for (let n = 0; n < NODE_COUNT; n++) {
-    const y = 1 - (2 * (n + 0.5)) / NODE_COUNT
-    const radial = Math.sqrt(Math.max(0, 1 - y * y))
-    const phi = n * GOLDEN_ANGLE
-    nodes.push([
-      Math.cos(phi) * radial * GLOBE_RADIUS,
-      y * GLOBE_RADIUS,
-      Math.sin(phi) * radial * GLOBE_RADIUS,
-    ])
-  }
-
-  const cluster = Math.max(8, Math.round(perNode * 0.32))
-  const edge = perNode - cluster
+  const half = 0.1 // cube half-side
+  const mid = (GRID_SIDE - 1) / 2
+  const cube = Math.max(8, Math.round(perNode * 0.45))
 
   for (let n = 0; n < NODE_COUNT; n++) {
-    const node = nodes[n] ?? [0, 0, 0]
+    const col = n % GRID_SIDE
+    const row = Math.floor(n / GRID_SIDE)
+    const cx = (col - mid) * NETGRID_SPACING
+    const cy = (mid - row) * NETGRID_SPACING
 
-    let partner = (n + 1) % NODE_COUNT
-    const chord = n % GRID_SIDE === 0
-    if (chord) {
-      partner = (n + 24) % NODE_COUNT
-    } else {
-      let best = -Infinity
-      for (let m = 0; m < NODE_COUNT; m++) {
-        if (m === n) continue
-        const other = nodes[m] ?? [0, 0, 0]
-        const dot = node[0] * other[0] + node[1] * other[1] + node[2] * other[2]
-        if (dot > best) {
-          best = dot
-          partner = m
-        }
-      }
-    }
-    const target = nodes[partner] ?? [0, 0, 0]
+    const links: Array<[number, number]> = []
+    if (col < GRID_SIDE - 1) links.push([cx + NETGRID_SPACING, cy])
+    if (row < GRID_SIDE - 1) links.push([cx, cy - NETGRID_SPACING])
 
     for (let k = 0; k < perNode; k++) {
       const i = (n * perNode + k) * 3
-      if (k < cluster) {
-        const a = r() * TAU
-        const b = Math.acos(2 * r() - 1)
-        const rad = Math.cbrt(r()) * 0.11
-        out[i] = node[0] + Math.sin(b) * Math.cos(a) * rad
-        out[i + 1] = node[1] + Math.sin(b) * Math.sin(a) * rad
-        out[i + 2] = node[2] + Math.cos(b) * rad
+      if (k < cube || links.length === 0) {
+        // One of the cube's 12 edges: pick the axis it runs along, fix the
+        // other two at a face, slide along it.
+        const axis = Math.floor(r() * 3)
+        const sa = r() < 0.5 ? -half : half
+        const sb = r() < 0.5 ? -half : half
+        const t = (r() * 2 - 1) * half
+        out[i] = cx + (axis === 0 ? t : sa)
+        out[i + 1] = cy + (axis === 1 ? t : axis === 0 ? sa : sb)
+        out[i + 2] = axis === 2 ? t : sb
         continue
       }
-      const u = (k - cluster) / Math.max(1, edge - 1)
-      let ex = node[0] + (target[0] - node[0]) * u
-      let ey = node[1] + (target[1] - node[1]) * u
-      let ez = node[2] + (target[2] - node[2]) * u
-      if (!chord) {
-        // Project the chord back onto the sphere and lift it a little: a route,
-        // not a wire.
-        const len = Math.hypot(ex, ey, ez) || 1
-        const lift = (GLOBE_RADIUS * (1 + 0.055 * Math.sin(Math.PI * u))) / len
-        ex *= lift
-        ey *= lift
-        ez *= lift
-      }
-      out[i] = ex + (r() - 0.5) * 0.04
-      out[i + 1] = ey + (r() - 0.5) * 0.04
-      out[i + 2] = ez + (r() - 0.5) * 0.04
+      const link = links[Math.floor(r() * links.length)] ?? [cx, cy]
+      const u = r()
+      out[i] = cx + (link[0] - cx) * u + (r() - 0.5) * 0.02
+      out[i + 1] = cy + (link[1] - cy) * u + (r() - 0.5) * 0.02
+      out[i + 2] = (r() - 0.5) * 0.02
     }
   }
   return out

@@ -7,8 +7,8 @@ import ContinuumCanvas from "@/components/continuum-canvas"
 // One substance, continuously reformed. A single particle system is the logo,
 // the ideas and the network: it condenses out of chaos straight into the
 // Capital 49 logotype, and is then scrubbed by the scroll through a Möbius
-// strip, a magnetic dipole, seven interlocking rings and a 49-node network
-// globe before closing on the same logo it opened with.
+// strip, a vortex of spiral strands, seven interlocking rings and a 49-node
+// network globe before closing on the same logo it opened with.
 //
 // Every morph detours 42% back through the 7 x 7 lattice at its midpoint, so no
 // form melts into the next — each one is re-born from the identity.
@@ -34,6 +34,21 @@ const STATS = [
   { n: "$200B", l: "Payments processed per year" },
   { n: "200,000+", l: "Customers" },
   { n: "200+", l: "Countries" },
+]
+
+const PORTFOLIO = [
+  { src: "/logos/portfolio/11x.svg", name: "11x" },
+  { src: "/logos/portfolio/wayflyer.svg", name: "Wayflyer" },
+  { src: "/logos/portfolio/rutter.svg", name: "Rutter" },
+  { src: "/logos/portfolio/kintsugi.svg", name: "Kintsugi" },
+  { src: "/logos/portfolio/avoca.png", name: "Avoca" },
+  { src: "/logos/portfolio/unify.svg", name: "Unify" },
+  { src: "/logos/portfolio/campfire.svg", name: "Campfire" },
+  { src: "/logos/portfolio/traild.svg", name: "Traild" },
+  { src: "/logos/portfolio/lorikeet.svg", name: "Lorikeet" },
+  { src: "/logos/portfolio/finway.svg", name: "Finway" },
+  { src: "/logos/portfolio/skuad.svg", name: "Skuad" },
+  { src: "/logos/portfolio/openborder.svg", name: "Openborder" },
 ]
 
 // The designed static build: the 49 points with the mark held inside them —
@@ -104,8 +119,21 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
     </div>
 
     <header class="site-head">
-      <a class="wordmark" href="#s1">Capital&nbsp;49</a>
-      <a class="contact" href="mailto:info@capital49.com">Contact</a>
+      <a class="brand" href="#s1" aria-label="Capital 49 — home">
+        <img
+          class="brand-img"
+          src="/logos/Capital49-logo-horizontal-black-trim.png"
+          alt=""
+          width="888"
+          height="150"
+        />
+      </a>
+      <p class="coords">1.2767° N&nbsp;&nbsp;103.8452° E</p>
+      <nav class="head-links" aria-label="Pages">
+        <a href="/portfolio">Portfolio</a>
+        <a href="/team">Team</a>
+        <a class="contact" href="mailto:info@capital49.com">Contact</a>
+      </nav>
     </header>
 
     <nav class="rail" aria-label="Sections">
@@ -129,20 +157,13 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
     <main>
       <!-- 01 ─ THE "49" ───────────────────────────────────────── centre ── -->
       <section id="s1" data-section class="sect sect-hero">
-        <div class="shell g7">
-          <div class="c7 mid">
-            <p class="eyebrow">01 — Origin</p>
-            <h1 class="display balance">For the exception, not the rule</h1>
-            <p class="lede lede-mid">
-              A new venture fund backed by the founders of Airwallex
-            </p>
-          </div>
+        <div class="hero-frame">
+          <p class="frame-caption">
+            A new venture fund backed by the founders of Airwallex
+          </p>
+          <p class="frame-caption frame-caption-right">© Capital 49</p>
         </div>
-
-        <div class="shell cue-row">
-          <span class="cue"><span class="cue-line"></span>Scroll</span>
-          <span class="meta">One substance — 49 = 7 × 7</span>
-        </div>
+        <h1 class="hero-title">For the exception, not the rule</h1>
       </section>
 
       <!-- 02 ─ MÖBIUS ──────────────────────────────────────────── left ── -->
@@ -156,16 +177,22 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
               products challenge the status quo and change the way the world
               works
             </p>
-            <p class="note">
-              A single surface with one side and one edge. Follow the rule all
-              the way round and you arrive on the other face.
-            </p>
           </div>
         </div>
       </section>
 
-      <!-- 03 ─ DIPOLE ─────────────────────────────────────────── right ── -->
-      <section id="s3" data-section data-stage="2" class="sect">
+      <!-- 03 ─ VORTEX ─────────────────────────────────────────── right ── -->
+      <!-- The Möbius -> vortex morph is the page's busiest (collapse, then
+           regrowth), so it gets a full viewport of scroll instead of the
+           default 70%. -->
+      <section
+        id="s3"
+        data-section
+        data-stage="2"
+        data-stage-start="top bottom"
+        data-stage-end="top top"
+        class="sect"
+      >
         <div class="shell g7">
           <div class="c7 lg-s5 lg-c3">
             <p class="eyebrow">03 — Dawn</p>
@@ -227,28 +254,46 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
               Work with us and get access to a global Airwallex network that
               includes potential customers, providers and advisors.
             </p>
-            <p class="note">
-              Forty-nine nodes, wired on great circles. Every one of them is a
-              point of the same lattice you started on.
-            </p>
           </div>
         </div>
       </section>
+
+      <!-- Portfolio ─ a band between the network and the return ─────────── -->
+      <div class="carousel-band">
+        <div class="logo-carousel" aria-label="Portfolio companies">
+          <div class="logo-track">
+            {
+              [0, 1].map((copy) => (
+                <div class="logo-set" aria-hidden={copy === 1}>
+                  {PORTFOLIO.map((c) => (
+                    <img src={c.src} alt={copy === 0 ? c.name : ""} loading="lazy" />
+                  ))}
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- ─ RETURN ──────────────────────────────────────────────── centre ── -->
     <footer data-stage="5">
       <div class="shell foot">
-        <p class="eyebrow">Return</p>
         <a class="talk" href="mailto:info@capital49.com">Talk to us</a>
-        <p class="lede lede-mid stack-lg">
-          The same forty-nine points you arrived on, opened out around the type.
-        </p>
+        <a class="foot-email" href="mailto:info@capital49.com">info@capital49.com</a>
+      </div>
+      <div class="foot-bar">
         <div class="foot-rule"></div>
         <div class="foot-row">
           <span class="wordmark">Capital&nbsp;49</span>
-          <span class="meta">49 = 7 × 7</span>
+          <a
+            class="foot-link"
+            href="https://www.linkedin.com/company/capital-49/"
+            target="_blank"
+            rel="noopener">LinkedIn</a
+          >
           <span class="meta">Est. 2021 — San Francisco</span>
+          <span class="meta">© 2026 Capital&nbsp;49</span>
         </div>
       </div>
     </footer>
@@ -283,22 +328,11 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         inset: 0;
         z-index: 0;
         /* 7 columns, 7 rows, a point at every intersection. */
-        background-image:
-          radial-gradient(
-            circle at 0 0,
-            rgba(255, 255, 255, 0.22) 1.1px,
-            transparent 1.6px
-          ),
-          linear-gradient(
-            to right,
-            rgba(255, 255, 255, 0.05) 1px,
-            transparent 1px
-          ),
-          linear-gradient(
-            to bottom,
-            rgba(255, 255, 255, 0.04) 1px,
-            transparent 1px
-          );
+        background-image: radial-gradient(
+          circle at 0 0,
+          rgba(255, 255, 255, 0.22) 1.1px,
+          transparent 1.6px
+        );
         background-size: calc(100% / 7) calc(100% / 7);
       }
       #scene {
@@ -324,16 +358,8 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         font-weight: 400;
         letter-spacing: 0.3em;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.44);
+        color: rgba(255, 255, 255, 0.68);
         font-variant-numeric: tabular-nums;
-      }
-      .display {
-        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
-        font-weight: 300;
-        font-size: clamp(2.6rem, 7.4vw, 6.5rem);
-        line-height: 0.95;
-        letter-spacing: -0.04em;
-        margin-top: clamp(1.25rem, 2.4vw, 2.25rem);
       }
       .headline {
         font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
@@ -342,9 +368,6 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         line-height: 1;
         letter-spacing: -0.032em;
         margin-top: clamp(1rem, 1.8vw, 1.6rem);
-      }
-      .balance {
-        text-wrap: balance;
       }
       .lede {
         font-size: clamp(0.95rem, 1vw, 1.125rem);
@@ -362,6 +385,58 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         line-height: 1.7;
         color: rgba(255, 255, 255, 0.42);
       }
+
+      /* ── Portfolio carousel ─────────────────────────────────────────── */
+      .carousel-band {
+        padding-block: clamp(4rem, 10vh, 7rem);
+      }
+      .logo-carousel {
+        width: min(1500px, 94vw);
+        margin-inline: auto;
+        overflow: hidden;
+        mask-image: linear-gradient(
+          to right,
+          transparent,
+          #000 14%,
+          #000 86%,
+          transparent
+        );
+        -webkit-mask-image: linear-gradient(
+          to right,
+          transparent,
+          #000 14%,
+          #000 86%,
+          transparent
+        );
+      }
+      .logo-track {
+        display: flex;
+        width: max-content;
+        animation: logo-marquee 36s linear infinite;
+      }
+      .logo-set {
+        display: flex;
+        align-items: center;
+        gap: clamp(3.25rem, 6vw, 5.5rem);
+        padding-right: clamp(3.25rem, 6vw, 5.5rem);
+      }
+      .logo-set img {
+        height: clamp(1.6rem, 2.6vw, 2.25rem);
+        width: auto;
+        /* The source marks are full-colour; the continuum is monochrome. */
+        filter: brightness(0) invert(1);
+        opacity: 0.55;
+      }
+      @keyframes logo-marquee {
+        to {
+          transform: translateX(-50%);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .logo-track {
+          animation: none;
+        }
+      }
       .meta {
         font-size: 0.6875rem;
         letter-spacing: 0.22em;
@@ -377,15 +452,25 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         text-decoration: none;
         color: #fff;
       }
-      .contact {
-        font-size: 0.6875rem;
-        letter-spacing: 0.32em;
-        text-transform: uppercase;
+      .head-links {
+        justify-self: end;
+        display: flex;
+        align-items: center;
+        gap: clamp(1.1rem, 2vw, 2rem);
+      }
+      .head-links a {
+        font-size: clamp(0.8rem, 0.95vw, 0.95rem);
         text-decoration: none;
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(255, 255, 255, 0.6);
         transition: color 0.35s ease;
       }
-      .contact:hover {
+      .head-links a:hover {
+        color: #fff;
+      }
+      .head-links .contact {
+        color: rgba(255, 255, 255, 0.85);
+      }
+      .head-links .contact:hover {
         color: #fff;
       }
       .stack-md {
@@ -438,40 +523,103 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         min-height: 100svh;
         padding-block: clamp(7rem, 14vh, 11rem);
       }
+      /* The hero is the one section measured against the viewport: it fills the
+         screen so the framed window can flex to whatever height is left once the
+         title beneath it is placed. */
       .sect-hero {
-        justify-content: flex-end;
-        gap: clamp(3rem, 8vh, 6rem);
+        height: 100svh;
+        min-height: 100svh;
+        justify-content: flex-start;
+        gap: clamp(1.5rem, 3.6vh, 3.2rem);
+        padding: clamp(4.25rem, 8vh, 6rem) clamp(1.25rem, 4.2vw, 4.5rem)
+          clamp(0.75rem, 2vh, 1.5rem);
+        overflow: hidden;
       }
-      .mid {
-        text-align: center;
+      .hero-frame {
+        position: relative;
+        flex: 1 1 auto;
+        min-height: 0;
       }
-      .lede-mid {
-        margin-inline: auto;
+      /* Sits astride the frame's bottom edge; its solid fill breaks the border
+         line into a short stub and a long run, the way the reference does. */
+      .frame-caption {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        transform: translateY(50%);
+        margin: 0;
+        padding-inline: 0.85rem;
+        background: #000;
+        font-size: clamp(1rem, 1.2vw, 1.2rem);
+        line-height: 1;
+        color: rgba(255, 255, 255, 0.72);
+        white-space: nowrap;
+      }
+      .frame-caption-right {
+        left: auto;
+        right: 0;
+      }
+      /* Sized a touch under the content width, then justified edge-to-edge — the
+         line always meets both frame edges and picks up the reference's even
+         tracking, whatever the viewport width. */
+      .hero-title {
+        margin: 0;
+        font-family: "IBM Plex Sans Condensed", sans-serif;
+        font-weight: 400;
+        font-size: 5.9vw;
+        line-height: 0.95;
+        text-transform: uppercase;
+        text-align: justify;
+        text-align-last: justify;
+        text-justify: inter-character;
+        transform: scaleY(1.15);
+        transform-origin: bottom;
       }
       .site-head {
         top: 0;
         left: 0;
         right: 0;
-        display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        padding: clamp(1.25rem, 2.6vw, 2.25rem) clamp(1.25rem, 4.2vw, 4.5rem);
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        align-items: center;
+        padding: clamp(1.1rem, 2.4vw, 1.9rem) clamp(1.25rem, 4.2vw, 4.5rem);
+      }
+      .brand {
+        justify-self: start;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-decoration: none;
+        color: #fff;
+      }
+      .brand-img {
+        display: block;
+        height: clamp(19px, 1.7vw, 25px);
+        width: auto;
+        /* The trimmed source is black-on-transparent; the header is white. */
+        filter: invert(1);
+      }
+      .coords {
+        justify-self: center;
+        font-size: clamp(0.8rem, 0.95vw, 0.95rem);
+        color: rgba(255, 255, 255, 0.85);
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
       }
       /* ── Footer: the return ─────────────────────────────────────────── */
       footer {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        min-height: 88svh;
-        padding-block: clamp(6rem, 12vh, 9rem);
+        justify-content: flex-end;
+        min-height: 100svh;
+        padding-block: clamp(6rem, 12vh, 9rem) clamp(1rem, 2vh, 1.5rem);
         text-align: center;
       }
       .talk {
         display: block;
-        margin-top: clamp(1.5rem, 3vw, 2.5rem);
         font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
         font-weight: 300;
-        font-size: clamp(3rem, 10vw, 8rem);
+        font-size: clamp(2.6rem, 8.5vw, 6.8rem);
         line-height: 0.9;
         letter-spacing: -0.042em;
         color: #fff;
@@ -481,8 +629,36 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       .talk:hover {
         opacity: 0.72;
       }
+      .foot-email {
+        display: inline-block;
+        margin-top: clamp(0.9rem, 2vw, 1.4rem);
+        font-size: 0.8125rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        text-decoration: none;
+        transition: color 0.4s ease;
+      }
+      .foot-email:hover {
+        color: #fff;
+      }
+      .foot-link {
+        font-size: 0.6875rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.6);
+        text-decoration: none;
+        transition: color 0.4s ease;
+      }
+      .foot-link:hover {
+        color: #fff;
+      }
+      .foot-bar {
+        width: 100%;
+        padding-inline: clamp(1.25rem, 4.2vw, 4.5rem);
+      }
       .foot-rule {
-        margin-top: clamp(4rem, 10vh, 7rem);
+        margin-top: clamp(3rem, 7vh, 5rem);
         height: 1px;
         background: rgba(255, 255, 255, 0.12);
       }
@@ -493,6 +669,18 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         align-items: baseline;
         justify-content: space-between;
         padding-top: clamp(1.25rem, 2.4vw, 1.75rem);
+      }
+
+      /* Desktop: sections take their height from their width, matching the
+         width-fit camera — the whole composition holds one proportion no
+         matter the window height. `min-height: auto` (not 0) keeps the
+         automatic minimum, so content can still grow a section past its
+         ratio instead of overflowing it. */
+      @media (min-width: 1024px) {
+        .sect:not(.sect-hero) {
+          min-height: auto;
+          aspect-ratio: 16 / 9;
+        }
       }
 
       /* ── Rail ───────────────────────────────────────────────────────── */
@@ -619,57 +807,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         font-size: 0.6875rem;
         letter-spacing: 0.2em;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.42);
-      }
-
-      .cue-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1rem;
-      }
-      .cue {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.75rem;
-        font-size: 0.625rem;
-        letter-spacing: 0.24em;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.45);
-      }
-      .cue-line {
-        display: block;
-        position: relative;
-        width: 46px;
-        height: 1px;
-        background: rgba(255, 255, 255, 0.25);
-        overflow: hidden;
-      }
-      .cue-line::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: #fff;
-        transform-origin: left;
-        animation: cue 2.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
-      }
-      @keyframes cue {
-        0% {
-          transform: scaleX(0);
-          transform-origin: left;
-        }
-        45% {
-          transform: scaleX(1);
-          transform-origin: left;
-        }
-        55% {
-          transform: scaleX(1);
-          transform-origin: right;
-        }
-        100% {
-          transform: scaleX(0);
-          transform-origin: right;
-        }
+        color: rgba(255, 255, 255, 0.68);
       }
 
       /* ── The designed static build ──────────────────────────────────── */
@@ -687,10 +825,6 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         display: none;
       }
       @media (prefers-reduced-motion: reduce) {
-        .cue-line::after {
-          animation: none;
-          transform: scaleX(0.4);
-        }
         *,
         *::before,
         *::after {
@@ -706,12 +840,45 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         #scene {
           opacity: 0.45;
         }
-        .sect {
+        .sect:not(.sect-hero) {
           justify-content: flex-end;
           padding-bottom: clamp(4rem, 12vh, 7rem);
         }
+        /* The caption sits inside the frame here, so the desktop gap that
+           clears the straddling caption is far more than needed. */
+        .sect-hero {
+          gap: 0.75rem;
+        }
         .lede {
           max-width: 38ch;
+        }
+        .hero-title {
+          font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
+          font-size: clamp(2.25rem, 12vw, 5rem);
+          line-height: 1;
+          text-align: left;
+          text-align-last: left;
+          transform: none;
+        }
+        /* Wrapped to several lines, a straddling caption would hang down into
+           the title — so on phones it sits fully inside the frame instead. */
+        .frame-caption {
+          font-size: 0.9375rem;
+          white-space: normal;
+          max-width: 20ch;
+          transform: none;
+          padding-inline: 0;
+          padding-bottom: 0.5rem;
+        }
+      }
+
+      /* Narrow headers: the page links keep their place; the coordinates go. */
+      @media (max-width: 760px) {
+        .site-head {
+          grid-template-columns: 1fr auto;
+        }
+        .coords {
+          display: none;
         }
       }
     </style>

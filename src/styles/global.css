@@ -3,6 +3,7 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/roboto";
 @import "@fontsource-variable/ibm-plex-sans";
+@import "@fontsource/ibm-plex-sans-condensed/400.css";
 @import "lenis/dist/lenis.css";
 
 @custom-variant dark (&:is(.dark *));

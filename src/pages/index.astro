@@ -559,46 +559,29 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       /* The intro sequence: the particles condense into the logo first; the
          chrome and the type then fade in, each sliding from its own edge —
          header from the top, rail from the right, title row from the bottom.
-         html.intro-hold is set before first paint only when the canvas runs. */
+         html.intro-hold is set before first paint only when the canvas runs,
+         and the canvas lifts it when the intro tween actually completes
+         (the "continuum:formed" event), so the reveal can never race a slow
+         load. */
+      .site-head,
+      .rail,
+      .hero-foot {
+        transition:
+          opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1),
+          transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+      }
       html.intro-hold .site-head {
-        animation: reveal-down 1.6s cubic-bezier(0.16, 1, 0.3, 1) 3s both;
-      }
-      html.intro-hold .rail {
-        animation: reveal-rail 1.6s cubic-bezier(0.16, 1, 0.3, 1) 3s both;
-      }
-      html.intro-hold .hero-foot {
-        animation: reveal-up 1.6s cubic-bezier(0.16, 1, 0.3, 1) 3s both;
-      }
-      @keyframes reveal-down {
-        from {
-          opacity: 0;
-          transform: translateY(-18px);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
+        opacity: 0;
+        transform: translateY(-18px);
       }
       /* The rail centres itself with translateY(-50%), so the slide keeps it. */
-      @keyframes reveal-rail {
-        from {
-          opacity: 0;
-          transform: translate(18px, -50%);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(-50%);
-        }
+      html.intro-hold .rail {
+        opacity: 0;
+        transform: translate(18px, -50%);
       }
-      @keyframes reveal-up {
-        from {
-          opacity: 0;
-          transform: translateY(24px);
-        }
-        to {
-          opacity: 1;
-          transform: none;
-        }
+      html.intro-hold .hero-foot {
+        opacity: 0;
+        transform: translateY(24px);
       }
       .site-head {
         top: 0;
@@ -937,11 +920,16 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         })
       })
 
-      // A reload partway down the page skips the particle intro (see
-      // continuum-field.tsx), so the chrome must not wait for it either.
-      if (window.scrollY > window.innerHeight * 0.5) {
+      // The chrome reveals when the particles have finished forming — the
+      // canvas dispatches "continuum:formed" at the end of its intro tween.
+      // A reload partway down the page skips the intro entirely, and a canvas
+      // that never gets there must not hold the page hostage: both release
+      // immediately or on a generous timer.
+      const releaseIntro = () =>
         document.documentElement.classList.remove("intro-hold")
-      }
+      window.addEventListener("continuum:formed", releaseIntro, { once: true })
+      if (window.scrollY > window.innerHeight * 0.5) releaseIntro()
+      setTimeout(releaseIntro, 8000)
 
       // The morphs are measured against the final layout; fonts landing late
       // would otherwise shift every start point.

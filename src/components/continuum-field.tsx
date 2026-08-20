@@ -473,7 +473,12 @@ export function ContinuumField() {
         glyphAttr.needsUpdate = true
       }
 
-      timeline = gsap.timeline()
+      // The page chrome holds itself hidden (html.intro-hold) until the
+      // substance has finished forming — signalled here, not timed, so a slow
+      // asset load can never let the type arrive before the logo.
+      timeline = gsap.timeline({
+        onComplete: () => window.dispatchEvent(new Event("continuum:formed")),
+      })
       if (deep) {
         uniforms.uIntro.value = 0
         timeline.to(uniforms.uOpacity, {

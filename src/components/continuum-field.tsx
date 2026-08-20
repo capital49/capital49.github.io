@@ -66,8 +66,9 @@ export const REF_ASPECT = 16 / 9
 // sculpture takes the vacated side and never shares one with the type.
 const SIDE = [0, 1, -1, 1, -1, 0] as const
 // Vertical offset, world units. A small hero lift centres the mark in the
-// framed window, which sits a touch above the viewport centre.
-const LIFT = [0.35, 0, 0, 0, 0, 0] as const
+// framed window, which sits a touch above the viewport centre; the closing
+// logo rides a little higher, filling the footer page above its centred copy.
+const LIFT = [0.35, 0, 0, 0, 0, 0.55] as const
 // Narrow viewports pin every form at the same height above the copy; the hero
 // icon alone sits a touch lower, back into the framed window.
 const NARROW_DROP = [0.45, 0, 0, 0, 0, 0] as const

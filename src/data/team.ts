@@ -14,7 +14,7 @@ export const TEAM: TeamMember[] = [
   {
     name: "Jack Zhang",
     role: "Founder",
-    bio: "Jack is the co-founder and CEO of Airwallex. He established the company to build the economic infrastructure that enables modern businesses to grow globally — Airwallex now operates across 100+ countries and processes over US$100 billion in annual payment volume.",
+    bio: "Jack is the co-founder and CEO of Airwallex. He established the company to build the economic infrastructure that enables modern businesses to grow globally — Airwallex now operates across 200+ countries and processes over US$280 billion in annual payment volume.",
     img: "/team/jack.avif",
   },
   {

@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css"
 import ContinuumCanvas from "@/components/continuum-canvas"
+import { PORTFOLIO } from "@/data/portfolio"
 
 // THE CONTINUUM — Capital 49.
 //
@@ -22,10 +23,11 @@ const SECTIONS = [
   { id: "s3", index: "03", label: "Dawn" },
   { id: "s4", index: "04", label: "Lineage" },
   { id: "s5", index: "05", label: "Network" },
+  { id: "contact", index: "06", label: "Contact" },
 ]
 
 const FOCUS = [
-  { index: "01", name: "AI" },
+  { index: "01", name: "AI || Infrastructure & applications" },
   { index: "02", name: "Enterprise platforms" },
   { index: "03", name: "Fintech & payments" },
 ]
@@ -34,21 +36,6 @@ const STATS = [
   { n: "$200B", l: "Payments processed per year" },
   { n: "200,000+", l: "Customers" },
   { n: "200+", l: "Countries" },
-]
-
-const PORTFOLIO = [
-  { src: "/logos/portfolio/11x.svg", name: "11x" },
-  { src: "/logos/portfolio/wayflyer.svg", name: "Wayflyer" },
-  { src: "/logos/portfolio/rutter.svg", name: "Rutter" },
-  { src: "/logos/portfolio/kintsugi.svg", name: "Kintsugi" },
-  { src: "/logos/portfolio/avoca.png", name: "Avoca" },
-  { src: "/logos/portfolio/unify.svg", name: "Unify" },
-  { src: "/logos/portfolio/campfire.svg", name: "Campfire" },
-  { src: "/logos/portfolio/traild.svg", name: "Traild" },
-  { src: "/logos/portfolio/lorikeet.svg", name: "Lorikeet" },
-  { src: "/logos/portfolio/finway.svg", name: "Finway" },
-  { src: "/logos/portfolio/skuad.svg", name: "Skuad" },
-  { src: "/logos/portfolio/openborder.svg", name: "Openborder" },
 ]
 
 // The designed static build: the 49 points with the mark held inside them —
@@ -83,6 +70,11 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
           var probe = document.createElement("canvas")
           if (probe.getContext("webgl2") || probe.getContext("webgl")) {
             document.documentElement.classList.add("live")
+            // The chrome and the type hold back while the particles condense
+            // into the logo, then slide in from their own edges (reveal-*).
+            if (window.scrollY === 0) {
+              document.documentElement.classList.add("intro-hold")
+            }
           }
         } catch (error) {
           /* no canvas, no class: the static mark stands in */
@@ -128,7 +120,12 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
           height="150"
         />
       </a>
-      <p class="coords">1.2767° N&nbsp;&nbsp;103.8452° E</p>
+      <a
+        class="coords"
+        href="https://maps.app.goo.gl/CjVBPAzM77GEDYEU7"
+        target="_blank"
+        rel="noopener">37.7916° N&nbsp;&nbsp;122.3930° W</a
+      >
       <nav class="head-links" aria-label="Pages">
         <a href="/portfolio">Portfolio</a>
         <a href="/team">Team</a>
@@ -157,13 +154,11 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
     <main>
       <!-- 01 ─ THE "49" ───────────────────────────────────────── centre ── -->
       <section id="s1" data-section class="sect sect-hero">
-        <div class="hero-frame">
-          <p class="frame-caption">
-            A new venture fund backed by the founders of Airwallex
-          </p>
-          <p class="frame-caption frame-caption-right">© Capital 49</p>
+        <div class="hero-frame"></div>
+        <div class="hero-foot">
+          <h1 class="hero-title">For the exception, not the rule</h1>
+          <p class="hero-caption">© Capital 49</p>
         </div>
-        <h1 class="hero-title">For the exception, not the rule</h1>
       </section>
 
       <!-- 02 ─ MÖBIUS ──────────────────────────────────────────── left ── -->
@@ -197,9 +192,6 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
           <div class="c7 lg-s5 lg-c3">
             <p class="eyebrow">03 — Dawn</p>
             <h2 class="headline">The dawning of a new, intelligent era</h2>
-            <p class="lede stack-md">
-              We invest in AI, enterprise platforms &amp; fintech/payments
-            </p>
 
             <ul class="rows stack-xl">
               {
@@ -277,8 +269,9 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
     </main>
 
     <!-- ─ RETURN ──────────────────────────────────────────────── centre ── -->
-    <footer data-stage="5">
+    <footer id="contact" data-section data-stage="5">
       <div class="shell foot">
+        <p class="eyebrow foot-eyebrow">06 — Contact</p>
         <a class="talk" href="mailto:info@capital49.com">Talk to us</a>
         <a class="foot-email" href="mailto:info@capital49.com">info@capital49.com</a>
       </div>
@@ -348,7 +341,13 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       .rail {
         position: fixed;
         z-index: 30;
+      }
+      .rail {
         mix-blend-mode: difference;
+      }
+      /* The header is opaque: scrolling copy passes behind it, not through it. */
+      .site-head {
+        background: linear-gradient(to bottom, #000 62%, rgba(0, 0, 0, 0));
       }
 
       /* ── Type ───────────────────────────────────────────────────────── */
@@ -461,16 +460,10 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       .head-links a {
         font-size: clamp(0.8rem, 0.95vw, 0.95rem);
         text-decoration: none;
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(255, 255, 255, 0.85);
         transition: color 0.35s ease;
       }
       .head-links a:hover {
-        color: #fff;
-      }
-      .head-links .contact {
-        color: rgba(255, 255, 255, 0.85);
-      }
-      .head-links .contact:hover {
         color: #fff;
       }
       .stack-md {
@@ -532,7 +525,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         justify-content: flex-start;
         gap: clamp(1.5rem, 3.6vh, 3.2rem);
         padding: clamp(4.25rem, 8vh, 6rem) clamp(1.25rem, 4.2vw, 4.5rem)
-          clamp(0.75rem, 2vh, 1.5rem);
+          clamp(2rem, 4.5vh, 3.5rem);
         overflow: hidden;
       }
       .hero-frame {
@@ -540,40 +533,72 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         flex: 1 1 auto;
         min-height: 0;
       }
-      /* Sits astride the frame's bottom edge; its solid fill breaks the border
-         line into a short stub and a long run, the way the reference does. */
-      .frame-caption {
-        position: absolute;
-        left: 0;
-        bottom: 0;
-        transform: translateY(50%);
+      /* One shared baseline: the title on the left, the copyright on the right. */
+      .hero-foot {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .hero-caption {
         margin: 0;
-        padding-inline: 0.85rem;
-        background: #000;
         font-size: clamp(1rem, 1.2vw, 1.2rem);
         line-height: 1;
         color: rgba(255, 255, 255, 0.72);
         white-space: nowrap;
       }
-      .frame-caption-right {
-        left: auto;
-        right: 0;
-      }
-      /* Sized a touch under the content width, then justified edge-to-edge — the
-         line always meets both frame edges and picks up the reference's even
-         tracking, whatever the viewport width. */
+      /* Set in the section-headline voice, a step smaller. */
       .hero-title {
         margin: 0;
-        font-family: "IBM Plex Sans Condensed", sans-serif;
-        font-weight: 400;
-        font-size: 5.9vw;
-        line-height: 0.95;
-        text-transform: uppercase;
-        text-align: justify;
-        text-align-last: justify;
-        text-justify: inter-character;
-        transform: scaleY(1.15);
-        transform-origin: bottom;
+        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
+        font-weight: 300;
+        font-size: clamp(2rem, 4.7vw, 4.1rem);
+        line-height: 1;
+        letter-spacing: -0.032em;
+      }
+      /* The intro sequence: the particles condense into the logo first; the
+         chrome and the type then fade in, each sliding from its own edge —
+         header from the top, rail from the right, title row from the bottom.
+         html.intro-hold is set before first paint only when the canvas runs. */
+      html.intro-hold .site-head {
+        animation: reveal-down 1.6s cubic-bezier(0.16, 1, 0.3, 1) 3s both;
+      }
+      html.intro-hold .rail {
+        animation: reveal-rail 1.6s cubic-bezier(0.16, 1, 0.3, 1) 3s both;
+      }
+      html.intro-hold .hero-foot {
+        animation: reveal-up 1.6s cubic-bezier(0.16, 1, 0.3, 1) 3s both;
+      }
+      @keyframes reveal-down {
+        from {
+          opacity: 0;
+          transform: translateY(-18px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      /* The rail centres itself with translateY(-50%), so the slide keeps it. */
+      @keyframes reveal-rail {
+        from {
+          opacity: 0;
+          transform: translate(18px, -50%);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(-50%);
+        }
+      }
+      @keyframes reveal-up {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
       }
       .site-head {
         top: 0;
@@ -605,6 +630,11 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         color: rgba(255, 255, 255, 0.85);
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
+        text-decoration: none;
+        transition: color 0.35s ease;
+      }
+      .coords:hover {
+        color: #fff;
       }
       /* ── Footer: the return ─────────────────────────────────────────── */
       footer {
@@ -614,6 +644,9 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         min-height: 100svh;
         padding-block: clamp(6rem, 12vh, 9rem) clamp(1rem, 2vh, 1.5rem);
         text-align: center;
+      }
+      .foot-eyebrow {
+        margin-bottom: clamp(1.25rem, 2.6vh, 2rem);
       }
       .talk {
         display: block;
@@ -844,31 +877,14 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
           justify-content: flex-end;
           padding-bottom: clamp(4rem, 12vh, 7rem);
         }
-        /* The caption sits inside the frame here, so the desktop gap that
-           clears the straddling caption is far more than needed. */
         .sect-hero {
           gap: 0.75rem;
         }
         .lede {
           max-width: 38ch;
         }
-        .hero-title {
-          font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
-          font-size: clamp(2.25rem, 12vw, 5rem);
-          line-height: 1;
-          text-align: left;
-          text-align-last: left;
-          transform: none;
-        }
-        /* Wrapped to several lines, a straddling caption would hang down into
-           the title — so on phones it sits fully inside the frame instead. */
-        .frame-caption {
+        .hero-caption {
           font-size: 0.9375rem;
-          white-space: normal;
-          max-width: 20ch;
-          transform: none;
-          padding-inline: 0;
-          padding-bottom: 0.5rem;
         }
       }
 
@@ -906,7 +922,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       // reveal animations on this page by design: the type is set and still.
       const ticks = Array.from(document.querySelectorAll<HTMLElement>(".tick"))
       Array.from(
-        document.querySelectorAll<HTMLElement>("section[data-section]")
+        document.querySelectorAll<HTMLElement>("[data-section]")
       ).forEach((section, index) => {
         ScrollTrigger.create({
           trigger: section,
@@ -920,6 +936,12 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
           },
         })
       })
+
+      // A reload partway down the page skips the particle intro (see
+      // continuum-field.tsx), so the chrome must not wait for it either.
+      if (window.scrollY > window.innerHeight * 0.5) {
+        document.documentElement.classList.remove("intro-hold")
+      }
 
       // The morphs are measured against the final layout; fonts landing late
       // would otherwise shift every start point.

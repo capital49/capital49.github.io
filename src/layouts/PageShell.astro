@@ -45,7 +45,12 @@ const onTeam = Astro.url.pathname.startsWith("/team")
           height="150"
         />
       </a>
-      <p class="coords">1.2767° N&nbsp;&nbsp;103.8452° E</p>
+      <a
+        class="coords"
+        href="https://maps.app.goo.gl/CjVBPAzM77GEDYEU7"
+        target="_blank"
+        rel="noopener">37.7916° N&nbsp;&nbsp;122.3930° W</a
+      >
       <nav class="head-links" aria-label="Pages">
         <a href="/portfolio" data-active={String(!onTeam)}>Portfolio</a>
         <a href="/team" data-active={String(onTeam)}>Team</a>
@@ -130,7 +135,8 @@ const onTeam = Astro.url.pathname.startsWith("/team")
         left: 0;
         right: 0;
         z-index: 30;
-        mix-blend-mode: difference;
+        /* Opaque: scrolling copy passes behind the header, not through it. */
+        background: linear-gradient(to bottom, #000 62%, rgba(0, 0, 0, 0));
         display: grid;
         grid-template-columns: 1fr auto 1fr;
         align-items: center;
@@ -153,6 +159,11 @@ const onTeam = Astro.url.pathname.startsWith("/team")
         color: rgba(255, 255, 255, 0.85);
         font-variant-numeric: tabular-nums;
         white-space: nowrap;
+        text-decoration: none;
+        transition: color 0.35s ease;
+      }
+      .coords:hover {
+        color: #fff;
       }
       .head-links {
         justify-self: end;
@@ -163,18 +174,17 @@ const onTeam = Astro.url.pathname.startsWith("/team")
       .head-links a {
         font-size: clamp(0.8rem, 0.95vw, 0.95rem);
         text-decoration: none;
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(255, 255, 255, 0.85);
         transition: color 0.35s ease;
       }
-      .head-links a:hover,
+      .head-links a:hover {
+        color: #fff;
+      }
       .head-links a[data-active="true"] {
         color: #fff;
-      }
-      .head-links .contact {
-        color: rgba(255, 255, 255, 0.85);
-      }
-      .head-links .contact:hover {
-        color: #fff;
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 0.4em;
       }
 
       /* ── Structure & type ───────────────────────────────────────────── */

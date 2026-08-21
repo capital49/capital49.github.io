@@ -72,7 +72,7 @@ const onTeam = Astro.url.pathname.startsWith("/team")
       <div class="shell foot-bar">
         <div class="foot-rule"></div>
         <div class="foot-row">
-          <span class="wordmark">Capital&nbsp;49</span>
+          <span class="meta">Est. 2021 — San Francisco</span>
           <a
             class="foot-link"
             href="https://www.linkedin.com/company/capital-49/"
@@ -80,7 +80,6 @@ const onTeam = Astro.url.pathname.startsWith("/team")
             rel="noopener">LinkedIn</a
           >
           <a class="foot-link" href="mailto:info@capital49.com">info@capital49.com</a>
-          <span class="meta">Est. 2021 — San Francisco</span>
           <span class="meta">© 2026 Capital&nbsp;49</span>
         </div>
       </div>
@@ -241,19 +240,11 @@ const onTeam = Astro.url.pathname.startsWith("/team")
         justify-content: space-between;
         padding-block: clamp(1.25rem, 2.4vw, 1.75rem) clamp(1rem, 2vh, 1.5rem);
       }
-      .wordmark {
-        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
-        font-size: 0.8125rem;
-        font-weight: 500;
-        letter-spacing: 0.26em;
-        text-transform: uppercase;
-        color: #fff;
-      }
       .foot-link {
         font-size: 0.6875rem;
         letter-spacing: 0.22em;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(255, 255, 255, 0.85);
         text-decoration: none;
         transition: color 0.4s ease;
       }
@@ -264,7 +255,7 @@ const onTeam = Astro.url.pathname.startsWith("/team")
         font-size: 0.6875rem;
         letter-spacing: 0.22em;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.34);
+        color: rgba(255, 255, 255, 0.85);
       }
 
       @media (max-width: 900px) {

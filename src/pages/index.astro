@@ -157,7 +157,6 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         <div class="hero-frame"></div>
         <div class="hero-foot">
           <h1 class="hero-title">For the exception, not the rule</h1>
-          <p class="hero-caption">© Capital 49</p>
         </div>
       </section>
 
@@ -278,7 +277,13 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       <div class="foot-bar">
         <div class="foot-rule"></div>
         <div class="foot-row">
-          <span class="wordmark">Capital&nbsp;49</span>
+          <img
+            class="foot-logo"
+            src="/logos/Capital49-mark-white.svg"
+            alt="Capital 49"
+            width="20"
+            height="20"
+          />
           <a
             class="foot-link"
             href="https://www.linkedin.com/company/capital-49/"
@@ -440,16 +445,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         font-size: 0.6875rem;
         letter-spacing: 0.22em;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.34);
-      }
-      .wordmark {
-        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
-        font-size: 0.8125rem;
-        font-weight: 500;
-        letter-spacing: 0.26em;
-        text-transform: uppercase;
-        text-decoration: none;
-        color: #fff;
+        color: rgba(255, 255, 255, 0.85);
       }
       .head-links {
         justify-self: end;
@@ -525,7 +521,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         justify-content: flex-start;
         gap: clamp(1.5rem, 3.6vh, 3.2rem);
         padding: clamp(4.25rem, 8vh, 6rem) clamp(1.25rem, 4.2vw, 4.5rem)
-          clamp(2rem, 4.5vh, 3.5rem);
+          clamp(4.5rem, 11vh, 8.5rem);
         overflow: hidden;
       }
       .hero-frame {
@@ -533,28 +529,20 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         flex: 1 1 auto;
         min-height: 0;
       }
-      /* One shared baseline: the title on the left, the copyright on the right. */
       .hero-foot {
         display: flex;
-        align-items: baseline;
-        justify-content: space-between;
-        gap: 1rem;
+        justify-content: center;
       }
-      .hero-caption {
-        margin: 0;
-        font-size: clamp(1rem, 1.2vw, 1.2rem);
-        line-height: 1;
-        color: rgba(255, 255, 255, 0.72);
-        white-space: nowrap;
-      }
-      /* Set in the section-headline voice, a step smaller. */
+      /* The footer's "Talk to us" voice: same scale, centred on the bottom. */
       .hero-title {
         margin: 0;
         font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
         font-weight: 300;
-        font-size: clamp(2rem, 4.7vw, 4.1rem);
-        line-height: 1;
-        letter-spacing: -0.032em;
+        font-size: clamp(2.2rem, 6.4vw, 5.2rem);
+        line-height: 0.9;
+        letter-spacing: -0.042em;
+        text-align: center;
+        text-wrap: balance;
       }
       /* The intro sequence: the particles condense into the logo first; the
          chrome and the type then fade in, each sliding from its own edge —
@@ -567,8 +555,8 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       .rail,
       .hero-foot {
         transition:
-          opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1),
-          transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+          opacity 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s,
+          transform 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s;
       }
       html.intro-hold .site-head {
         opacity: 0;
@@ -651,7 +639,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         font-size: 0.8125rem;
         letter-spacing: 0.22em;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(255, 255, 255, 0.85);
         text-decoration: none;
         transition: color 0.4s ease;
       }
@@ -662,7 +650,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         font-size: 0.6875rem;
         letter-spacing: 0.22em;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(255, 255, 255, 0.85);
         text-decoration: none;
         transition: color 0.4s ease;
       }
@@ -685,6 +673,11 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         align-items: baseline;
         justify-content: space-between;
         padding-top: clamp(1.25rem, 2.4vw, 1.75rem);
+      }
+      .foot-logo {
+        align-self: center;
+        height: 0.95rem;
+        width: auto;
       }
 
       /* Desktop: sections take their height from their width, matching the
@@ -865,9 +858,6 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         }
         .lede {
           max-width: 38ch;
-        }
-        .hero-caption {
-          font-size: 0.9375rem;
         }
       }
 

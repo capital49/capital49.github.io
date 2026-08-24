@@ -33,7 +33,7 @@ const FOCUS = [
 ]
 
 const STATS = [
-  { n: "$200B", l: "Payments processed per year" },
+  { n: "$280B", l: "Payments processed per year" },
   { n: "200,000+", l: "Customers" },
   { n: "200+", l: "Countries" },
 ]
@@ -169,7 +169,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
             <p class="lede stack-md">
               We work with exceptional founders who believe, like us, that great
               products challenge the status quo and change the way the world
-              works
+              works.
             </p>
           </div>
         </div>
@@ -215,7 +215,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
             <h2 class="headline">Capital 49 × Airwallex</h2>
             <p class="lede stack-md">
               We understand what it's like to build something from nothing.
-              Airwallex processes $200 billion of payments per year across
+              Airwallex processes $280 billion of payments per year across
               200,000+ customers and 200+ countries. We're uniquely positioned to
               help you navigate the challenges of hypergrowth.
             </p>
@@ -430,6 +430,11 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         /* The source marks are full-colour; the continuum is monochrome. */
         filter: brightness(0) invert(1);
         opacity: 0.55;
+      }
+      /* Entangl's mark towers over its wordmark, so the lockup reads small at
+         the shared height; give it a compensating bump. */
+      .logo-set img[src*="entangl"] {
+        height: calc(clamp(1.6rem, 2.6vw, 2.25rem) * 1.4);
       }
       @keyframes logo-marquee {
         to {

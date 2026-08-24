@@ -27,7 +27,7 @@ export const TEAM: TeamMember[] = [
     name: "Philipp Seifert",
     role: "Partner",
     bio: "Philipp co-leads Capital 49's investment strategy with a focus on AI infrastructure and applications. Previously a Partner at 468 Capital, he invested in Poetiq AI, Entangl, Sygaldry and Brev (acquired by NVIDIA); at Sapphire Ventures his investments included Braze (IPO), Segment (acquired by Twilio) and DataRobot. He began his career at Goldman Sachs and is a Kauffman Fellows Class 28 member.",
-    img: "/team/philipp.png",
+    img: "/team/philipp.avif",
   },
   {
     name: "Kai Wu",

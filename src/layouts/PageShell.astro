@@ -6,8 +6,8 @@ import "../styles/global.css"
 // but without the sculpture: the content is the object here.
 //
 // Each page opens with a numbered eyebrow that extends the homepage's section
-// sequence (01–05 live on the index), and a justified condensed title in the
-// same treatment as the hero.
+// sequence (01–05 live on the index), and a title in the same treatment as the
+// homepage headlines.
 
 interface Props {
   title: string
@@ -205,17 +205,14 @@ const onTeam = Astro.url.pathname.startsWith("/team")
       .page-head {
         padding-top: clamp(7.5rem, 16vh, 11rem);
       }
-      /* The hero's treatment, carried inward: condensed, upright-stretched,
-         set at a fixed size and anchored left. */
+      /* The homepage's .headline treatment, carried inward. */
       .page-title {
-        margin: clamp(1.25rem, 2.6vh, 2rem) 0 0;
-        font-family: "IBM Plex Sans Condensed", sans-serif;
-        font-weight: 400;
-        font-size: 3.75rem;
-        line-height: 0.95;
-        text-transform: uppercase;
-        transform: scaleY(1.15);
-        transform-origin: bottom;
+        margin: clamp(1rem, 1.8vw, 1.6rem) 0 0;
+        font-family: var(--font-heading, "IBM Plex Sans Variable", sans-serif);
+        font-weight: 300;
+        font-size: clamp(2rem, 4.6vw, 4rem);
+        line-height: 1;
+        letter-spacing: -0.032em;
       }
       .page-lede {
         margin-top: clamp(1.75rem, 3.6vh, 2.75rem);
@@ -258,12 +255,6 @@ const onTeam = Astro.url.pathname.startsWith("/team")
         color: rgba(255, 255, 255, 0.85);
       }
 
-      @media (max-width: 900px) {
-        .page-title {
-          font-size: clamp(2.5rem, 11.5vw, 3.75rem);
-          line-height: 1;
-        }
-      }
       /* Narrow headers: the page links keep their place; the coordinates go. */
       @media (max-width: 760px) {
         .site-head {

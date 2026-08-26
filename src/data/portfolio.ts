@@ -1,4 +1,3 @@
-// Links sourced from capital49.com/portfolio.
 export interface PortfolioCompany {
   name: string
   src: string

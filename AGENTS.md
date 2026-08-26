@@ -6,8 +6,7 @@ This site is a landing page for Capital 49 (capital49.com), a venture capital fi
 - Partners: Christopher Cheng (leads investment strategy; ex-SoftBank Vision Fund, Obvious Ventures), Philipp Seifert (co-leads strategy, focused on AI infrastructure and applications; ex-468 Capital, Sapphire Ventures), Kai Wu (Global CRO of Airwallex).
 - Invests in early-stage, high-growth technology companies. Focus areas: AI, infrastructure, and applications (current site lists fintech, e-commerce, AI, and B2B software).
 - Portfolio includes 11x, Wayflyer, Rutter, Kintsugi, Avoca, Unify, Campfire, Traild, Lorikeet, Finway, Skuad, and Openborder.
-- The firm is establishing an identity separate from Airwallex and wants to stand on its own.
-- Website audience: prospective LPs (the firm is raising a fund) and founders.
+- Website audience: prospective LPs and founders.
 - Name significance: 49 = 7×7; a nod to the 1849 California gold rush ("49ers") and San Francisco.
 
 ## Development

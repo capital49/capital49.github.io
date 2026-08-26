@@ -1,4 +1,3 @@
-// Content sourced from capital49.com/team.
 export interface TeamMember {
   name: string
   role: string

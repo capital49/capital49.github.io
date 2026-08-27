@@ -1,6 +1,9 @@
 ---
 import PageShell from "../layouts/PageShell.astro"
-import { PORTFOLIO } from "../data/portfolio"
+import { portfolio, singleton } from "@/lib/content"
+
+const page = (await singleton("pages")).portfolio
+const PORTFOLIO = await portfolio()
 
 // The portfolio as a specimen table: one hairline grid, one mark per cell,
 // every logo reduced to the same white the continuum is drawn in. The cell
@@ -10,10 +13,10 @@ import { PORTFOLIO } from "../data/portfolio"
 
 <PageShell
   title="Portfolio — Capital 49"
-  description="The Capital 49 portfolio — early-stage companies challenging the status quo across AI, enterprise platforms and fintech."
+  description={page.description}
   eyebrow="07 — Portfolio"
-  heading="Builders redefining what's possible"
-  lede="Meet the founders who chose to build the future rather than wait for it."
+  heading={page.heading}
+  lede={page.lede}
 >
   <section class="shell band">
     <ul class="grid">
@@ -22,7 +25,7 @@ import { PORTFOLIO } from "../data/portfolio"
           <li>
             <a class="cell" href={c.url} target="_blank" rel="noopener">
               <img
-                src={c.src}
+                src={c.logo}
                 alt={c.name}
                 loading={i < 6 ? "eager" : "lazy"}
               />

@@ -12,3 +12,7 @@ pnpm dev        # local server at localhost:4321
 pnpm build      # static output in dist/
 pnpm typecheck  # astro check
 ```
+
+## Content
+
+Copy, portfolio companies and team members live in `content/` as YAML and are edited at `/keystatic`, which signs in through Keystatic Cloud and commits to this repo. Images uploaded there are written to `public/`.

@@ -19,6 +19,7 @@
     "@fontsource-variable/roboto": "^5.3.0",
     "@fontsource/ibm-plex-sans-condensed": "^5.3.0",
     "@gsap/react": "^2.1.2",
+    "@keystatic/core": "^0.6.8",
     "@react-three/fiber": "^9.6.1",
     "@tabler/icons-react": "^3.45.0",
     "@tailwindcss/vite": "^4.3.3",
@@ -39,6 +40,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@types/node": "^26.3.0",
     "@types/three": "^0.185.1",
     "typescript": "^6.0.3"
   }

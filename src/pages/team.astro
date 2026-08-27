@@ -1,6 +1,9 @@
 ---
 import PageShell from "../layouts/PageShell.astro"
-import { TEAM, TEAM_INTRO, TEAM_TAGLINE } from "../data/team"
+import { singleton, team } from "@/lib/content"
+
+const page = (await singleton("pages")).team
+const TEAM = await team()
 
 // The team page — a ledger crossed with a contact sheet: four hairline rows,
 // each holding a portrait with the name and role beside it. Approach opens the
@@ -10,10 +13,10 @@ import { TEAM, TEAM_INTRO, TEAM_TAGLINE } from "../data/team"
 
 <PageShell
   title="Team — Capital 49"
-  description="The Capital 49 team — conviction-led, partnership-driven."
+  description={page.description}
   eyebrow="08 — Team"
-  heading={TEAM_TAGLINE}
-  lede={TEAM_INTRO}
+  heading={page.heading}
+  lede={page.lede}
 >
   <section class="shell band">
     <ul class="members">
@@ -21,7 +24,7 @@ import { TEAM, TEAM_INTRO, TEAM_TAGLINE } from "../data/team"
         TEAM.map((m, i) => (
           <li class="member">
             <span class="idx">{String(i + 1).padStart(2, "0")}</span>
-            <img class="portrait" src={m.img} alt={m.name} loading="lazy" />
+            <img class="portrait" src={m.photo} alt={m.name} loading="lazy" />
             <div class="copy">
               <h2 class="name">{m.name}</h2>
               <span class="role">{m.role}</span>

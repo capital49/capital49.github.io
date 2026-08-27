@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css"
+import { formatCoordinates, singleton } from "@/lib/content"
 
 // Shared chrome for the inner pages. These pages continue the continuum of the
 // homepage — same black field, same 7 x 7 lattice, same set-and-still type —
@@ -19,6 +20,7 @@ interface Props {
 
 const { title, description, eyebrow, heading, lede } = Astro.props
 const onTeam = Astro.url.pathname.startsWith("/team")
+const site = await singleton("site")
 ---
 
 <!doctype html>
@@ -47,14 +49,14 @@ const onTeam = Astro.url.pathname.startsWith("/team")
       </a>
       <a
         class="coords"
-        href="https://maps.app.goo.gl/CjVBPAzM77GEDYEU7"
+        href={site.mapUrl}
         target="_blank"
-        rel="noopener">37.7916° N&nbsp;&nbsp;122.3930° W</a
+        rel="noopener">{formatCoordinates(site)}</a
       >
       <nav class="head-links" aria-label="Pages">
         <a href="/portfolio" data-active={String(!onTeam)}>Portfolio</a>
         <a href="/team" data-active={String(onTeam)}>Team</a>
-        <a class="contact" href="mailto:info@capital49.com">Contact</a>
+        <a class="contact" href={`mailto:${site.contactEmail}`}>Contact</a>
       </nav>
     </header>
 
@@ -72,14 +74,14 @@ const onTeam = Astro.url.pathname.startsWith("/team")
       <div class="shell foot-bar">
         <div class="foot-rule"></div>
         <div class="foot-row">
-          <span class="meta">Est. 2021 — San Francisco</span>
+          <span class="meta">{site.footerNote}</span>
           <a
             class="foot-link"
-            href="https://www.linkedin.com/company/capital-49/"
+            href={site.linkedin}
             target="_blank"
             rel="noopener">LinkedIn</a
           >
-          <a class="foot-link" href="mailto:info@capital49.com">info@capital49.com</a>
+          <a class="foot-link" href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
           <span class="meta">© 2026 Capital&nbsp;49</span>
         </div>
       </div>

@@ -1,7 +1,7 @@
 ---
 import "../styles/global.css"
 import ContinuumCanvas from "@/components/continuum-canvas"
-import { PORTFOLIO } from "@/data/portfolio"
+import { formatCoordinates, portfolio, singleton } from "@/lib/content"
 
 // THE CONTINUUM — Capital 49.
 //
@@ -17,26 +17,23 @@ import { PORTFOLIO } from "@/data/portfolio"
 // The page has no DOM reveal animations of any kind. The type is set and still;
 // the sculpture is the only thing that moves.
 
+const site = await singleton("site")
+const home = await singleton("home")
+const PORTFOLIO = await portfolio()
+
 const SECTIONS = [
-  { id: "s1", index: "01", label: "Origin" },
-  { id: "s2", index: "02", label: "Deviation" },
-  { id: "s3", index: "03", label: "Dawn" },
-  { id: "s4", index: "04", label: "Lineage" },
-  { id: "s5", index: "05", label: "Network" },
-  { id: "contact", index: "06", label: "Contact" },
+  { id: "s1", index: "01", label: home.hero.label },
+  { id: "s2", index: "02", label: home.deviation.label },
+  { id: "s3", index: "03", label: home.dawn.label },
+  { id: "s4", index: "04", label: home.lineage.label },
+  { id: "s5", index: "05", label: home.network.label },
+  { id: "contact", index: "06", label: home.contact.label },
 ]
 
-const FOCUS = [
-  { index: "01", name: "AI || Infrastructure & applications" },
-  { index: "02", name: "Enterprise platforms" },
-  { index: "03", name: "Fintech & payments" },
-]
-
-const STATS = [
-  { n: "$280B", l: "Payments processed per year" },
-  { n: "200,000+", l: "Customers" },
-  { n: "200+", l: "Countries" },
-]
+const FOCUS = home.dawn.focus.map((name, i) => ({
+  index: String(i + 1).padStart(2, "0"),
+  name,
+}))
 
 // The designed static build: the 49 points with the mark held inside them —
 // the first frame and the last frame of the continuum, at rest.
@@ -55,10 +52,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
     <meta name="theme-color" content="#000000" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>Capital 49</title>
-    <meta
-      name="description"
-      content="Capital 49 — a new venture fund backed by the founders of Airwallex. For the exception, not the rule."
-    />
+    <meta name="description" content={home.description} />
     <script is:inline>
       // Decided before first paint, so the static mark never flashes for readers
       // who are about to get the canvas — and never fails to appear for readers
@@ -122,14 +116,14 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       </a>
       <a
         class="coords"
-        href="https://maps.app.goo.gl/CjVBPAzM77GEDYEU7"
+        href={site.mapUrl}
         target="_blank"
-        rel="noopener">37.7916° N&nbsp;&nbsp;122.3930° W</a
+        rel="noopener">{formatCoordinates(site)}</a
       >
       <nav class="head-links" aria-label="Pages">
         <a href="/portfolio">Portfolio</a>
         <a href="/team">Team</a>
-        <a class="contact" href="mailto:info@capital49.com">Contact</a>
+        <a class="contact" href={`mailto:${site.contactEmail}`}>Contact</a>
       </nav>
     </header>
 
@@ -156,7 +150,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       <section id="s1" data-section class="sect sect-hero">
         <div class="hero-frame"></div>
         <div class="hero-foot">
-          <h1 class="hero-title">For the exception, not the rule</h1>
+          <h1 class="hero-title">{home.hero.title}</h1>
         </div>
       </section>
 
@@ -164,13 +158,9 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       <section id="s2" data-section data-stage="1" class="sect">
         <div class="shell g7">
           <div class="c7 lg-c3">
-            <p class="eyebrow">02 — Deviation</p>
-            <h2 class="headline">Bold and daring, by design</h2>
-            <p class="lede stack-md">
-              We work with exceptional founders who believe, like us, that great
-              products challenge the status quo and change the way the world
-              works.
-            </p>
+            <p class="eyebrow">02 — {home.deviation.label}</p>
+            <h2 class="headline">{home.deviation.headline}</h2>
+            <p class="lede stack-md">{home.deviation.body}</p>
           </div>
         </div>
       </section>
@@ -189,8 +179,8 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       >
         <div class="shell g7">
           <div class="c7 lg-s5 lg-c3">
-            <p class="eyebrow">03 — Dawn</p>
-            <h2 class="headline">The dawning of a new, intelligent era</h2>
+            <p class="eyebrow">03 — {home.dawn.label}</p>
+            <h2 class="headline">{home.dawn.headline}</h2>
 
             <ul class="rows stack-xl">
               {
@@ -211,22 +201,17 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       <section id="s4" data-section data-stage="3" class="sect">
         <div class="shell g7">
           <div class="c7 lg-c3">
-            <p class="eyebrow">04 — Lineage</p>
-            <h2 class="headline">Capital 49 × Airwallex</h2>
-            <p class="lede stack-md">
-              We understand what it's like to build something from nothing.
-              Airwallex processes $280 billion of payments per year across
-              200,000+ customers and 200+ countries. We're uniquely positioned to
-              help you navigate the challenges of hypergrowth.
-            </p>
+            <p class="eyebrow">04 — {home.lineage.label}</p>
+            <h2 class="headline">{home.lineage.headline}</h2>
+            <p class="lede stack-md">{home.lineage.body}</p>
           </div>
 
           <div class="c7 lg-c4 stats">
             {
-              STATS.map((stat) => (
+              home.lineage.stats.map((stat) => (
                 <div class="stat">
-                  <p class="n">{stat.n}</p>
-                  <p class="l">{stat.l}</p>
+                  <p class="n">{stat.value}</p>
+                  <p class="l">{stat.label}</p>
                 </div>
               ))
             }
@@ -238,13 +223,9 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
       <section id="s5" data-section data-stage="4" class="sect">
         <div class="shell g7">
           <div class="c7 lg-s5 lg-c3">
-            <p class="eyebrow">05 — Network</p>
-            <h2 class="headline">An unfair advantage for founders</h2>
-            <p class="lede stack-md">
-              Our team has experience building some of the world's top startups.
-              Work with us and get access to a global Airwallex network that
-              includes potential customers, providers and advisors.
-            </p>
+            <p class="eyebrow">05 — {home.network.label}</p>
+            <h2 class="headline">{home.network.headline}</h2>
+            <p class="lede stack-md">{home.network.body}</p>
           </div>
         </div>
       </section>
@@ -257,7 +238,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
               [0, 1].map((copy) => (
                 <div class="logo-set" aria-hidden={copy === 1}>
                   {PORTFOLIO.map((c) => (
-                    <img src={c.src} alt={copy === 0 ? c.name : ""} loading="lazy" />
+                    <img src={c.logo} alt={copy === 0 ? c.name : ""} loading="lazy" />
                   ))}
                 </div>
               ))
@@ -270,9 +251,9 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
     <!-- ─ RETURN ──────────────────────────────────────────────── centre ── -->
     <footer id="contact" data-section data-stage="5">
       <div class="shell foot">
-        <p class="eyebrow foot-eyebrow">06 — Contact</p>
-        <a class="talk" href="mailto:info@capital49.com">Talk to us</a>
-        <a class="foot-email" href="mailto:info@capital49.com">info@capital49.com</a>
+        <p class="eyebrow foot-eyebrow">06 — {home.contact.label}</p>
+        <a class="talk" href={`mailto:${site.contactEmail}`}>{home.contact.headline}</a>
+        <a class="foot-email" href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
       </div>
       <div class="foot-bar">
         <div class="foot-rule"></div>
@@ -286,11 +267,11 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
           />
           <a
             class="foot-link"
-            href="https://www.linkedin.com/company/capital-49/"
+            href={site.linkedin}
             target="_blank"
             rel="noopener">LinkedIn</a
           >
-          <span class="meta">Est. 2021 — San Francisco</span>
+          <span class="meta">{site.footerNote}</span>
           <span class="meta">© 2026 Capital&nbsp;49</span>
         </div>
       </div>

@@ -1,0 +1,20 @@
+---
+import KeystaticAdmin from "@/components/keystatic-admin"
+
+// GitHub Pages serves this for every unknown path, which is how the admin's
+// client-side routes under /keystatic/ resolve on a static host.
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Not found — Capital 49</title>
+  </head>
+  <body>
+    <KeystaticAdmin notFound client:only="react" />
+    <noscript><p>Page not found.</p></noscript>
+  </body>
+</html>

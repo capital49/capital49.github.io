@@ -1,0 +1,33 @@
+description: Capital 49 — a new venture fund backed by the founders of Airwallex. For the exception, not the rule.
+hero:
+  label: Origin
+  title: For the exception, not the rule
+deviation:
+  label: Deviation
+  headline: Bold and daring, by design
+  body: We work with exceptional founders who believe, like us, that great products challenge the status quo and change the way the world works.
+dawn:
+  label: Dawn
+  headline: The dawning of a new, intelligent era
+  focus:
+    - "AI || Infrastructure & applications"
+    - Enterprise platforms
+    - "Fintech & payments"
+lineage:
+  label: Lineage
+  headline: Capital 49 × Airwallex
+  body: We understand what it's like to build something from nothing. Airwallex processes $280 billion of payments per year across 200,000+ customers and 200+ countries. We're uniquely positioned to help you navigate the challenges of hypergrowth.
+  stats:
+    - value: $280B
+      label: Payments processed per year
+    - value: 200,000+
+      label: Customers
+    - value: 200+
+      label: Countries
+network:
+  label: Network
+  headline: An unfair advantage for founders
+  body: Our team has experience building some of the world's top startups. Work with us and get access to a global Airwallex network that includes potential customers, providers and advisors.
+contact:
+  label: Contact
+  headline: Talk to us

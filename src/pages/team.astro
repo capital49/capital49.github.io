@@ -5,7 +5,7 @@ import { singleton, team } from "@/lib/content"
 const page = (await singleton("pages")).team
 const TEAM = await team()
 
-// The team page — a ledger crossed with a contact sheet: four hairline rows,
+// The team page — a ledger crossed with a contact sheet: one hairline row per person,
 // each holding a portrait with the name and role beside it. Approach opens the
 // row: the role slides out to the right rail, the name lifts, and the bio
 // surfaces beneath it. Where hover doesn't exist, everything stays in view.

@@ -3,7 +3,7 @@
 This site is a landing page for Capital 49 (capital49.com), a venture capital firm founded by the founders of Airwallex.
 
 - Founded in 2021 by Jack Zhang (co-founder and CEO of Airwallex); all Airwallex co-founders (Max Li, Lucy Liu, Xijing Dai) invested in the fund. Initial target of US$200M.
-- Partners: Christopher Cheng (leads investment strategy; ex-SoftBank Vision Fund, Obvious Ventures), Philipp Seifert (co-leads strategy, focused on AI infrastructure and applications; ex-468 Capital, Sapphire Ventures), Kai Wu (Global CRO of Airwallex).
+- Partners: Christopher Cheng (leads investment strategy; ex-SoftBank Vision Fund, Obvious Ventures), Philipp Seifert (co-leads strategy, focused on AI infrastructure and applications; ex-468 Capital, Sapphire Ventures).
 - Invests in early-stage, high-growth technology companies. Focus areas: AI, infrastructure, and applications (current site lists fintech, e-commerce, AI, and B2B software).
 - Portfolio includes 11x, Wayflyer, Rutter, Kintsugi, Avoca, Unify, Campfire, Traild, Lorikeet, Finway, Skuad, and Openborder.
 - Website audience: prospective LPs and founders.

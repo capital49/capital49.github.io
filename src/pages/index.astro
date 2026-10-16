@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css"
 import ContinuumCanvas from "@/components/continuum-canvas"
+import ContinuumStill from "@/components/continuum-still.astro"
 import { formatCoordinates, portfolio, singleton } from "@/lib/content"
 
 // THE CONTINUUM — Capital 49.
@@ -35,13 +36,6 @@ const FOCUS = home.dawn.focus.map((name, i) => ({
   name,
 }))
 
-// The designed static build: the 49 points with the mark held inside them —
-// the first frame and the last frame of the continuum, at rest.
-const PITCH = 70 / 6
-const DOTS = Array.from({ length: 49 }, (_, n) => ({
-  cx: 15 + (n % 7) * PITCH,
-  cy: 15 + Math.floor(n / 7) * PITCH,
-}))
 ---
 
 <!doctype html>
@@ -54,8 +48,8 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
     <title>Capital 49</title>
     <meta name="description" content={home.description} />
     <script is:inline>
-      // Decided before first paint, so the static mark never flashes for readers
-      // who are about to get the canvas — and never fails to appear for readers
+      // Decided before first paint, so the static stills never flash for readers
+      // who are about to get the canvas — and never fail to appear for readers
       // who are not (no JS module support, no WebGL, reduced motion).
       ;(function () {
         try {
@@ -71,7 +65,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
             }
           }
         } catch (error) {
-          /* no canvas, no class: the static mark stands in */
+          /* no canvas, no class: the static stills stand in */
         }
       })()
     </script>
@@ -84,24 +78,6 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
 
     <div id="scene" aria-hidden="true">
       <ContinuumCanvas client:load />
-    </div>
-
-    <div class="static-mark" aria-hidden="true">
-      <svg viewBox="0 0 100 100" width="100%" height="100%">
-        {DOTS.map((d) => <circle cx={d.cx} cy={d.cy} r="0.85" fill="#fff" opacity="0.24" />)}
-        <text
-          x="50"
-          y="50"
-          text-anchor="middle"
-          dominant-baseline="central"
-          font-family="'IBM Plex Sans Variable', 'IBM Plex Sans', sans-serif"
-          font-weight="500"
-          font-size="46"
-          letter-spacing="-2.2"
-          fill="#fff"
-          opacity="0.8">49</text
-        >
-      </svg>
     </div>
 
     <header class="site-head">
@@ -148,6 +124,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
     <main>
       <!-- 01 ─ THE "49" ───────────────────────────────────────── centre ── -->
       <section id="s1" data-section class="sect sect-hero">
+        <ContinuumStill stage={0} />
         <div class="hero-frame"></div>
         <div class="hero-foot">
           <h1 class="hero-title">{home.hero.title}</h1>
@@ -156,6 +133,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
 
       <!-- 02 ─ MÖBIUS ──────────────────────────────────────────── left ── -->
       <section id="s2" data-section data-stage="1" class="sect">
+        <ContinuumStill stage={1} />
         <div class="shell g7">
           <div class="c7 lg-c3">
             <p class="eyebrow">02 — {home.deviation.label}</p>
@@ -177,6 +155,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
         data-stage-end="top top"
         class="sect"
       >
+        <ContinuumStill stage={2} />
         <div class="shell g7">
           <div class="c7 lg-s5 lg-c3">
             <p class="eyebrow">03 — {home.dawn.label}</p>
@@ -199,6 +178,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
 
       <!-- 04 ─ SEVEN RINGS ─────────────────────────────────────── left ── -->
       <section id="s4" data-section data-stage="3" class="sect">
+        <ContinuumStill stage={3} />
         <div class="shell g7">
           <div class="c7 lg-c3">
             <p class="eyebrow">04 — {home.lineage.label}</p>
@@ -221,6 +201,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
 
       <!-- 05 ─ NETWORK GLOBE ──────────────────────────────────── right ── -->
       <section id="s5" data-section data-stage="4" class="sect">
+        <ContinuumStill stage={4} />
         <div class="shell g7">
           <div class="c7 lg-s5 lg-c3">
             <p class="eyebrow">05 — {home.network.label}</p>
@@ -250,6 +231,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
 
     <!-- ─ RETURN ──────────────────────────────────────────────── centre ── -->
     <footer id="contact" data-section data-stage="5">
+        <ContinuumStill stage={5} />
       <div class="shell foot">
         <p class="eyebrow foot-eyebrow">06 — {home.contact.label}</p>
         <a class="talk" href={`mailto:${site.contactEmail}`}>{home.contact.headline}</a>
@@ -298,8 +280,7 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
 
       /* ── Layer stack ────────────────────────────────────────────────── */
       .lattice,
-      #scene,
-      .static-mark {
+      #scene {
         position: fixed;
         pointer-events: none;
       }
@@ -807,16 +788,25 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
 
       /* ── The designed static build ──────────────────────────────────── */
       /* Shown whenever the sculpture cannot run: reduced motion, no WebGL, no
-         modules. The mark held inside the 49 points — the continuum, at rest. */
-      .static-mark {
-        top: 50%;
-        left: 50%;
-        width: min(52vh, 52vw);
-        height: min(52vh, 52vw);
-        transform: translate(-50%, -50%);
-        z-index: 1;
+         modules. Each section carries a captured frame of its own form
+         (continuum-still.astro), one viewport tall, scrolling with the copy. */
+      .sect,
+      footer {
+        position: relative;
       }
-      html.live .static-mark {
+      .still {
+        position: absolute;
+        inset: 0 0 auto;
+        height: 100svh;
+        z-index: -1;
+        pointer-events: none;
+      }
+      .still img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      html.live .still {
         display: none;
       }
       @media (prefers-reduced-motion: reduce) {
@@ -832,7 +822,8 @@ const DOTS = Array.from({ length: 49 }, (_, n) => ({
          it (see continuum-field.tsx), so the copy hangs off the bottom of each
          section and the particles dim to keep the type crisp. */
       @media (max-width: 900px) {
-        #scene {
+        #scene,
+        .still {
           opacity: 0.45;
         }
         .sect:not(.sect-hero) {

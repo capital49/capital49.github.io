@@ -1,0 +1,16 @@
+---
+// A captured frame of the continuum at one stage, for readers who don't get
+// the live canvas (reduced motion, no WebGL). It sits behind its section's
+// copy and scrolls with it. Frames were captured from the live canvas at
+// 1440x900 (desktop) and 390x844 (phone), with the section's top at the top
+// of the viewport.
+interface Props {
+  stage: number
+}
+const { stage } = Astro.props
+---
+
+<picture class="still" aria-hidden="true">
+  <source media="(max-width: 900px)" srcset={`/continuum/m-${stage}.webp`} />
+  <img src={`/continuum/d-${stage}.webp`} alt="" loading="lazy" decoding="async" />
+</picture>

@@ -826,9 +826,18 @@ const FOCUS = home.dawn.focus.map((name, i) => ({
         .still {
           opacity: 0.45;
         }
+        /* The form is pinned to the viewport while the copy scrolls, so each
+           section reserves the top half for the form to hold in, and the
+           copy is backed in black: it slides over the form, never through. */
         .sect:not(.sect-hero) {
           justify-content: flex-end;
+          padding-top: 50svh;
           padding-bottom: clamp(4rem, 12vh, 7rem);
+        }
+        .sect:not(.sect-hero) > .shell,
+        .carousel-band {
+          background: #000;
+          box-shadow: 0 0 2.5rem 1.5rem #000;
         }
         .sect-hero {
           gap: 0.75rem;

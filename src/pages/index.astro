@@ -53,7 +53,10 @@ const FOCUS = home.dawn.focus.map((name, i) => ({
       // who are not (no JS module support, no WebGL, reduced motion).
       ;(function () {
         try {
-          if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+          // Reduced motion is ignored for now: the canvas runs for everyone. To
+          // hand those readers the stills again, restore this line (and its
+          // twin in continuum-canvas.tsx):
+          // if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
           if (!("noModule" in HTMLScriptElement.prototype)) return
           var probe = document.createElement("canvas")
           if (probe.getContext("webgl2") || probe.getContext("webgl")) {

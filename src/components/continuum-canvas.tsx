@@ -30,9 +30,11 @@ export default function ContinuumCanvas() {
   const [paused, setPaused] = useState(false)
 
   useEffect(() => {
-    const ok =
-      !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
-      hasWebGL()
+    // Reduced motion is ignored for now: the canvas runs for everyone. To hand
+    // those readers the stills again, restore this check (and its twin in the
+    // page's inline probe):
+    // !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+    const ok = hasWebGL()
     setEnabled(ok)
     if (!ok) document.documentElement.classList.remove("live")
   }, [])

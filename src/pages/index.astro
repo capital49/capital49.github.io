@@ -829,6 +829,11 @@ const FOCUS = home.dawn.focus.map((name, i) => ({
         .still {
           opacity: 0.45;
         }
+        /* The logos shrink with the viewport, so one loop covers less ground;
+           a shorter loop keeps the drift near its desktop speed. */
+        .logo-track {
+          animation-duration: 24s;
+        }
         /* The form is pinned to the viewport while the copy scrolls, so each
            section reserves the top half for the form to hold in, and the
            copy is backed in black: it slides over the form, never through. */

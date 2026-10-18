@@ -406,9 +406,11 @@ const FOCUS = home.dawn.focus.map((name, i) => ({
           transform: translateX(-50%);
         }
       }
+      /* The marquee keeps drifting under reduced motion; this beats the
+         blanket 0.01ms animation-duration rules below and in PageShell. */
       @media (prefers-reduced-motion: reduce) {
         .logo-track {
-          animation: none;
+          animation-duration: 36s !important;
         }
       }
       .meta {
@@ -832,7 +834,7 @@ const FOCUS = home.dawn.focus.map((name, i) => ({
         /* The logos shrink with the viewport, so one loop covers less ground;
            a shorter loop keeps the drift near its desktop speed. */
         .logo-track {
-          animation-duration: 24s;
+          animation-duration: 24s !important;
         }
         /* The form is pinned to the viewport while the copy scrolls, so each
            section reserves the top half for the form to hold in, and the

@@ -222,7 +222,7 @@ const FOCUS = home.dawn.focus.map((name, i) => ({
               [0, 1].map((copy) => (
                 <div class="logo-set" aria-hidden={copy === 1}>
                   {PORTFOLIO.map((c) => (
-                    <img src={c.logo} alt={copy === 0 ? c.name : ""} loading="lazy" />
+                    <img src={c.logo} alt={copy === 0 ? c.name : ""} />
                   ))}
                 </div>
               ))
